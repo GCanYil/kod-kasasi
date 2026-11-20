@@ -559,8 +559,71 @@ var MODULLER=[
 ]}
 ];
 
+
+var EK={id:'ek',ad:'Ek görevler',ek:true,gorevler:[
+ {id:'e11',tur:'tahmin',ad:'Sözlüğün içinde liste',soru:'Bir sözlükteki değer bir liste de olabilir. Aşağıda her öğrencinin karşısında sınav notlarının listesi var. `sinif["Ali"]` yazınca Ali\'nin not listesi gelir ve onunla her listeyle yapılan şeyler yapılabilir. Bu kod ne yazar?',
+  kod:'sinif = {"Ali": [70, 80, 90], "Ece": [100, 90]}\nprint(len(sinif["Ali"]))',secenekler:['2','Ali','3','240'],dogru:2,
+  aciklama:'`sinif["Ali"]` üç notluk bir listedir; `len` onun eleman sayısını verir. `sum(sinif["Ali"])` de notların toplamını verirdi.'},
+ {id:'e12',tur:'kod',ad:'Not çizelgesi',
+  giris:'Bir öğretmen üç öğrencisinin sınav notlarını tutuyor: Ali 70, 80, 90 aldı; Ece 100, 90, 95 aldı; Can 60, 75, 60 aldı. Öğretmen her öğrencinin ortalamasını ve sınıfın en başarılı öğrencisini görmek istiyor. Ortalama hesabını her öğrenci için yeniden yazmamak için bir fonksiyon kullan.',
+  istek:['`ortalama(notlar)` adlı bir fonksiyon yaz: aldığı listedeki sayıların ortalamasını `return` ile geri versin. Örneğin `ortalama([70, 80, 90])` 80 vermeli.',
+   'Notları `sinif` adlı bir sözlükte tut: öğrencinin adı anahtar, notlarının listesi değer.',
+   'Her öğrencinin adını ve ortalamasını yazdır; ortalamayı fonksiyonunu çağırarak bul.',
+   'En son satırda, ortalaması en yüksek olan öğrencinin adını yazdır. Adı elle yazma; program bulsun.'],
+  ipucu:[['Fonksiyonun içinde `sum` ve `len` yeter. En yüksek ortalamayı bulmak için iki değişken tut: şimdiye kadarki en yüksek ortalama ve o ortalamanın sahibinin adı. Sözlüğü dolaşırken daha yükseğini görünce ikisini birlikte güncelle.']],
+  ornek:'Ali 80.0\nEce 95.0\nCan 65.0\nEn yüksek ortalama: Ece',
+  kontrol:async function(T){var r=await T([]);
+   var ts=[[[70,80,90],80],[[10,20],15],[[5],5]];for(var i=0;i<ts.length;i++){var c=r.cagir('ortalama',[ts[i][0]]);if(c.yok)return r.hata||'`ortalama` adlı bir fonksiyon bulamadım.';
+    if(c.h)return '`ortalama('+JSON.stringify(ts[i][0])+')` hata verdi: '+c.h;if(c.s===null)return '`ortalama` bir değer döndürmüyor. Sonucu `print` ile değil `return` ile geri ver.';
+    if(Math.abs(c.s-ts[i][1])>1e-9)return '`ortalama('+JSON.stringify(ts[i][0])+')` '+ts[i][1]+' vermeli; '+c.s+' verdi.';}
+   if(r.hata)return r.hata;
+   var sn=r.al('sinif');if(!soz(sn)||!Array.isArray(sn.Ali))return '`sinif` sözlüğünde her öğrencinin karşısında not listesi olmalı.';
+   if(!varMi(r,80)||!varMi(r,95)||!varMi(r,65))return 'Çıktıda üç ortalamayı (80, 95, 65) göremedim.';
+   var son=r.satirlar[r.satirlar.length-1]||'';return son.indexOf('Ece')>=0?null:'Son satırda en yüksek ortalamalı öğrencinin adı (Ece) olmalı; son satır: '+son;}},
+ {id:'e21',tur:'tahmin',ad:'Bir metnin harfleri',soru:'`for` bir listeyi dolaştığı gibi bir metni de dolaşabilir; her turda sıradaki harf gelir. `harf in "0123456789"` ise o harf bu metnin içinde geçiyorsa, yani bir rakamsa doğru olur. Bu kod ne yazar?',
+  kod:'sayac = 0\nfor harf in "ab12c":\n    if harf in "0123456789":\n        sayac = sayac + 1\nprint(sayac)',secenekler:['5','3','0','2'],dogru:3,
+  aciklama:'Döngü beş harfi tek tek dolaşır: a, b, 1, 2, c. Yalnız "1" ve "2" rakam olduğu için sayaç 2 olur.'},
+ {id:'e22',tur:'kod',ad:'Şifre denetçisi',
+  giris:'Bir siteye üye olurken site zayıf şifreleri kabul etmez. Sen de böyle bir denetçi yaz. Bu sitede bir şifre şu iki koşulu birden sağlıyorsa güçlü sayılır: en az 8 karakter uzunluğunda olmalı ve içinde en az bir rakam bulunmalı. Bir metnin uzunluğunu `len` verir. Bir fonksiyon `True` ya da `False` döndürebilir ve `return` çalıştığı anda fonksiyon biter.',
+  istek:['`guclu_mu(sifre)` adlı bir fonksiyon yaz: şifre güçlüyse `True`, değilse `False` döndürsün. Örneğin `guclu_mu("kelebek7x")` `True`, `guclu_mu("kelebek")` `False`, `guclu_mu("abc1")` `False` vermeli.',
+   'Program kullanıcıya "Şifre: " diye sorsun.',
+   'Şifre güçlü değilse "Zayıf şifre" yazdırıp yeniden sorsun.',
+   'Şifre güçlüyse "Şifre kabul edildi" yazdırıp bitsin.'],
+  ipucu:[['Fonksiyonda önce uzunluğa bak: kısaysa hemen `False` döndür. Sonra harfleri tek tek dolaş: bir rakam görürsen hemen `True` döndür. Döngü bitti ve hiç rakam görmediysen `False` döndür. Programda `while True` kur ve fonksiyonun sonucunu `if` içinde kullan: `if guclu_mu(sifre):`']],
+  ornek:'Şifre: abc\nZayıf şifre\nŞifre: abcdefgh\nZayıf şifre\nŞifre: kelebek7x\nŞifre kabul edildi',
+  kontrol:async function(T){var r=await T(['abc','abcdefgh','kelebek7x']);
+   var ts=[['abc',false],['abcdefgh',false],['abc1',false],['abcdefg1',true],['12345678',true],['1234567',false]];
+   for(var i=0;i<ts.length;i++){var c=r.cagir('guclu_mu',[ts[i][0]]);if(c.yok)return r.hata||'`guclu_mu` adlı bir fonksiyon bulamadım.';
+    if(c.h)return '`guclu_mu("'+ts[i][0]+'")` hata verdi: '+c.h;if(c.s===null)return '`guclu_mu` bir değer döndürmüyor. `return True` ya da `return False` kullan.';
+    if(c.s!==ts[i][1])return '`guclu_mu("'+ts[i][0]+'")` '+(ts[i][1]?'True':'False')+' vermeli; '+(c.s===true?'True':c.s===false?'False':JSON.stringify(c.s))+' verdi.';}
+   if(r.hata)return r.hata;
+   var c2=tr(r.cikti),z=c2.split('zayıf').length-1;if(z!==2)return 'Şifreler abc, abcdefgh, kelebek7x iken "Zayıf şifre" 2 kez yazılmalı; '+z+' kez yazıldı.';
+   if(c2.indexOf('kabul')<0)return 'Güçlü şifre girilince "Şifre kabul edildi" yazmalı.';
+   return r.kalan>0?'Program bütün şifreleri sormadan bitti.':null;}},
+ {id:'e31',tur:'tahmin',ad:'İki koşul birden',soru:'İki koşulun ikisinin de doğru olmasını istiyorsan aralarına `and` yazılır. `and` ile bağlanan koşul, yalnız iki taraf da doğruysa doğrudur. Bu kod ne yazar?',
+  kod:'a = "t"\nb = "m"\nif a == "t" and b == "k":\n    print("evet")\nelse:\n    print("hayır")',secenekler:['evet','hayır','evet ve hayır','Hata verir'],dogru:1,
+  aciklama:'`a == "t"` doğru ama `b == "k"` yanlış. `and` ikisinin birden doğru olmasını ister, bu yüzden `else` çalışır.'},
+ {id:'e32',tur:'kod',ad:'Taş kâğıt makas turnuvası',
+  giris:'İki arkadaş taş kâğıt makas oynuyor ve kimin daha iyi olduğunu bir turnuvayla belirlemek istiyor: 3 tur kazanan ilk oyuncu turnuvayı kazanır. Kurallar: taş makası yener, kâğıt taşı yener, makas kâğıdı yener; iki oyuncu aynı şeyi seçerse o tur berabere biter ve kimse puan almaz. Oyuncular hamlelerini tek harfle yazar: taş için t, kâğıt için k, makas için m.',
+  istek:['`kazanan(a, b)` adlı bir fonksiyon yaz: `a` birinci oyuncunun, `b` ikinci oyuncunun hamlesi. Fonksiyon "birinci", "ikinci" ya da "berabere" metnini döndürsün. Örneğin `kazanan("t", "m")` "birinci", `kazanan("t", "k")` "ikinci", `kazanan("k", "k")` "berabere" vermeli.',
+   'Skoru bir sözlükte tut: "birinci" ve "ikinci" anahtarları, ikisi de 0\'dan başlasın.',
+   'Her turda önce "1. oyuncu (t, k, m): ", sonra "2. oyuncu (t, k, m): " diye sor; turu kimin kazandığını fonksiyonunla bul ve skoru güncelle.',
+   'Bir oyuncu 3 tur kazanınca sormayı bırak ve "Turnuvayı 1. oyuncu kazandı" ya da "Turnuvayı 2. oyuncu kazandı" yazdır.'],
+  ipucu:[['Fonksiyonda önce beraberliğe bak (`a == b`). Sonra birinci oyuncunun kazandığı üç durumu `and` ile yaz; geriye kalan her durumda ikinci kazanmıştır. Fonksiyonun döndürdüğü metin skor sözlüğündeki anahtarlarla aynı olduğu için `skor[sonuc]` ile doğrudan o oyuncunun puanına ulaşabilirsin. Döngü iki skor da 3\'ten küçükken sürmeli.']],
+  ornek:'1. oyuncu (t, k, m): t\n2. oyuncu (t, k, m): m\nSkor: 1 - 0\n1. oyuncu (t, k, m): k\n2. oyuncu (t, k, m): k\nBerabere\nSkor: 1 - 0\n...\nTurnuvayı 1. oyuncu kazandı',
+  kontrol:async function(T){var g1=['t','m','k','k','m','t','k','t','t','m'],r=await T(g1);
+   var bek={tt:'berabere',kk:'berabere',mm:'berabere',tm:'birinci',kt:'birinci',mk:'birinci',mt:'ikinci',tk:'ikinci',km:'ikinci'};
+   for(var k in bek){var c=r.cagir('kazanan',[k[0],k[1]]);if(c.yok)return r.hata||'`kazanan` adlı bir fonksiyon bulamadım.';
+    if(c.h)return '`kazanan("'+k[0]+'", "'+k[1]+'")` hata verdi: '+c.h;if(c.s===null)return '`kazanan` bir değer döndürmüyor. Sonucu `return` ile geri ver.';
+    if(c.s!==bek[k])return '`kazanan("'+k[0]+'", "'+k[1]+'")` "'+bek[k]+'" vermeli; '+JSON.stringify(c.s)+' verdi.';}
+   if(r.hata)return r.hata;
+   var c1=tr(r.cikti);if(c1.indexOf('1. oyuncu kazandı')<0||c1.indexOf('2. oyuncu kazandı')>=0)return 'Turlar t-m, k-k, m-t, k-t, t-m iken 1. oyuncu 3 tur kazanır; "Turnuvayı 1. oyuncu kazandı" yazmalı.';
+   if(r.kalan>0)return 'Program bir oyuncu 3\'e ulaşmadan durdu.';
+   var r2=await T(['m','t','t','k','k','m']);if(r2.hata)return 'Turlar m-t, t-k, k-m iken: '+r2.hata;var c2=tr(r2.cikti);
+   if(c2.indexOf('2. oyuncu kazandı')<0||c2.indexOf('1. oyuncu kazandı')>=0)return 'Turlar m-t, t-k, k-m iken 2. oyuncu 3 tur kazanır; "Turnuvayı 2. oyuncu kazandı" yazmalı.';return null;}}
+]};
 var BILGI_CIKTI={"m1": ["Tur 1\nTur 2\nTur 3\nBitti", "6"], "m2": ["elma\n3\n['elma', 'muz', 'kivi', 'çilek']", "elma\nmuz\nkivi"], "m3": ["Tur 1\nTur 2\nTur 3\nBitti", "Tur 1\nTur 2\nBitti"], "m4": ["16\n3", "Ali 15\nEce 16"], "m5": ["Ali 15\nEce 16"]};
-var COZ={"t12": "c2F5aSA9IGludChpbnB1dCgiSGFuZ2kgc2F5xLE/ICIpKQpmb3IgaSBpbiByYW5nZSgxLCAxMSk6CiAgICBwcmludChzYXlpLCAieCIsIGksICI9Iiwgc2F5aSAqIGkp", "t13": "Zm9yIGkgaW4gcmFuZ2UoMTApOgogICAgYm95YShpLCBpKQ==", "t14": "Zm9yIGkgaW4gcmFuZ2UoMSwgMTEpOgogICAgcHJpbnQoaSk=", "t15": "dG9wbGFtID0gMAp0dXRhbl9ndW4gPSAwCmZvciBpIGluIHJhbmdlKDcpOgogICAgYWRpbSA9IGludChpbnB1dCgiQnVnw7xuIGthw6cgYWTEsW0gYXR0xLFuPyAiKSkKICAgIHRvcGxhbSA9IHRvcGxhbSArIGFkaW0KICAgIGlmIGFkaW0gPj0gMTAwMDA6CiAgICAgICAgdHV0YW5fZ3VuID0gdHV0YW5fZ3VuICsgMQpwcmludCgiVG9wbGFtIGFkxLFtOiIsIHRvcGxhbSkKcHJpbnQoIkhlZGVmaW4gdHV0dHXEn3UgZ8O8bjoiLCB0dXRhbl9ndW4p", "t22": "c2Fya2lsYXIgPSBbXQpmb3IgaSBpbiByYW5nZSgzKToKICAgIHNhcmtpID0gaW5wdXQoIsWeYXJrxLEgYWTEsTogIikKICAgIHNhcmtpbGFyLmFwcGVuZChzYXJraSkKc2F5YWMgPSAxCmZvciBzYXJraSBpbiBzYXJraWxhcjoKICAgIHByaW50KHNheWFjLCAiLiIsIHNhcmtpKQogICAgc2F5YWMgPSBzYXlhYyArIDE=", "t23": "c3VyZWxlciA9IFszLCA1LCAyLCA2LCA0XQpjdW1hcnRlc2kgPSBpbnQoaW5wdXQoIkN1bWFydGVzaSBrYcOnIHNhYXQ/ICIpKQpzdXJlbGVyLmFwcGVuZChjdW1hcnRlc2kpCnByaW50KCJUb3BsYW06Iiwgc3VtKHN1cmVsZXIpKQ==", "t24": "Z29sbGVyID0gWzIsIDAsIDNdCmdvbGxlci5hcHBlbmQoMSkKcHJpbnQobGVuKGdvbGxlcikp", "t25": "c2tvcmxhciA9IFsxMjAsIDM0MCwgOTAsIDQxMCwgMjc1XQplbl95dWtzZWsgPSBza29ybGFyWzBdCmZvciBza29yIGluIHNrb3JsYXI6CiAgICBpZiBza29yID4gZW5feXVrc2VrOgogICAgICAgIGVuX3l1a3NlayA9IHNrb3IKcHJpbnQoIkVuIHnDvGtzZWsgc2tvcjoiLCBlbl95dWtzZWsp", "t30": "c2F5YWMgPSA1CndoaWxlIHNheWFjID4gMDoKICAgIHByaW50KHNheWFjKQogICAgc2F5YWMgPSBzYXlhYyAtIDEKcHJpbnQoIkJhxZ9sYSEiKQ==", "t32": "YmlyaWtlbiA9IDAKaGFmdGEgPSAwCndoaWxlIGJpcmlrZW4gPCA1MDA6CiAgICBwYXJhID0gaW50KGlucHV0KCJCdSBoYWZ0YSBrYcOnIFRMPyAiKSkKICAgIGJpcmlrZW4gPSBiaXJpa2VuICsgcGFyYQogICAgaGFmdGEgPSBoYWZ0YSArIDEKcHJpbnQoIkhlZGVmZSIsIGhhZnRhLCAiaGFmdGFkYSB1bGHFn3TEsW4iKQ==", "t33": "aGFrID0gMwp3aGlsZSBoYWsgPiAwOgogICAgdGFobWluID0gaW5wdXQoIsWeaWZyZTogIikKICAgIGlmIHRhaG1pbiA9PSAiNDgyMSI6CiAgICAgICAgcHJpbnQoIkHDp8SxbGTEsSIpCiAgICAgICAgYnJlYWsKICAgIGVsc2U6CiAgICAgICAgaGFrID0gaGFrIC0gMQppZiBoYWsgPT0gMDoKICAgIHByaW50KCJLaWxpdGxlbmRpIik=", "t34": "c2F5YWMgPSAxCndoaWxlIHNheWFjIDw9IDM6CiAgICBwcmludCgiVHVyIiwgc2F5YWMpCiAgICBzYXlhYyA9IHNheWFjICsgMQ==", "t35": "d2hpbGUgVHJ1ZToKICAgIHNlY2ltID0gaW5wdXQoIlNlw6dpbSAoMSwgMiwgcSk6ICIpLmxvd2VyKCkKICAgIGlmIHNlY2ltID09ICIxIjoKICAgICAgICBwcmludCgiTWVyaGFiYSEiKQogICAgZWxpZiBzZWNpbSA9PSAiMiI6CiAgICAgICAgZm9yIGkgaW4gcmFuZ2UoMSwgNCk6CiAgICAgICAgICAgIHByaW50KGkpCiAgICBlbGlmIHNlY2ltID09ICJxIjoKICAgICAgICBwcmludCgiR8O2csO8xZ/DvHLDvHoiKQogICAgICAgIGJyZWFrCiAgICBlbHNlOgogICAgICAgIHByaW50KCJHZcOnZXJzaXogc2XDp2ltIik=", "t40": "Zm9ybWFsYXIgPSB7IkFsaSI6IDcsICJFY2UiOiAxMCwgIkNhbiI6IDR9CnByaW50KGZvcm1hbGFyWyJFY2UiXSkKZm9ybWFsYXJbIlN1Il0gPSAxMQpmb3JtYWxhclsiQWxpIl0gPSA5CnByaW50KGxlbihmb3JtYWxhcikp", "t42": "c3RvayA9IHsidG9zdCI6IDEyLCAiYXlyYW4iOiA0LCAic2ltaXQiOiA5fQpzdG9rWyJ0b3N0Il0gPSBzdG9rWyJ0b3N0Il0gLSAyCnN0b2tbInN1Il0gPSAyMApmb3IgdXJ1biBpbiBzdG9rOgogICAgcHJpbnQodXJ1biwgc3Rva1t1cnVuXSkKICAgIGlmIHN0b2tbdXJ1bl0gPCA1OgogICAgICAgIHByaW50KCJhemFsZMSxIik=", "t43": "ZmlsbWxlciA9IHsiVXAiOiA4LCAiQ29jbyI6IDksICJDYXJzIjogNn0KZmlsbWxlclsiQ2FycyJdID0gNwpmaWxtbGVyWyJTb3VsIl0gPSA5CmZvciBmaWxtIGluIGZpbG1sZXI6CiAgICBwcmludChmaWxtLCBmaWxtbGVyW2ZpbG1dKQ==", "t44": "c3RvayA9IHsidG9zdCI6IDEyLCAiYXlyYW4iOiAyMH0KcHJpbnQoc3Rva1sidG9zdCJdKQ==", "t45": "bm90bGFyID0geyJNYXRlbWF0aWsiOiA4MCwgIkZpemlrIjogNzAsICJLaW15YSI6IDkwfQp0b3BsYW0gPSAwCmZvciBkZXJzIGluIG5vdGxhcjoKICAgIHRvcGxhbSA9IHRvcGxhbSArIG5vdGxhcltkZXJzXQpwcmludCgiT3J0YWxhbWE6IiwgdG9wbGFtIC8gbGVuKG5vdGxhcikp", "t51": "aGFyY2FtYWxhciA9IFtdCndoaWxlIFRydWU6CiAgICBjZXZhcCA9IGlucHV0KCJIYXJjYW1hIChiaXRpcm1layBpw6dpbiBiaXR0aSk6ICIpCiAgICBpZiBjZXZhcC5sb3dlcigpID09ICJiaXR0aSI6CiAgICAgICAgYnJlYWsKICAgIGhhcmNhbWFsYXIuYXBwZW5kKGludChjZXZhcCkpCnByaW50KCJUb3BsYW06Iiwgc3VtKGhhcmNhbWFsYXIpKQpidXl1ayA9IDAKZm9yIGhhcmNhbWEgaW4gaGFyY2FtYWxhcjoKICAgIGlmIGhhcmNhbWEgPiAxMDA6CiAgICAgICAgYnV5dWsgPSBidXl1ayArIDEKcHJpbnQoIjEwMCdkZW4gYsO8ecO8ayBoYXJjYW1hIHNhecSxc8SxOiIsIGJ1eXVrKQ==", "t52": "b3lsYXIgPSB7IkFrc2l5b24iOiAwLCAiU3BvciI6IDAsICJCdWxtYWNhIjogMH0Kd2hpbGUgVHJ1ZToKICAgIG95ID0gaW5wdXQoIlPEsXJhZGFraSBveXUgZ2lyaW4gKEFrc2l5b24gacOnaW4gMSwgU3BvciBpw6dpbiAyLCBCdWxtYWNhIGnDp2luIDMsIGJpdGlybWVrIGnDp2luIHEpOiAiKQogICAgaWYgb3kgPT0gInEiOgogICAgICAgIGJyZWFrCiAgICBlbGlmIG95ID09ICIxIjoKICAgICAgICBveWxhclsiQWtzaXlvbiJdID0gb3lsYXJbIkFrc2l5b24iXSArIDEKICAgIGVsaWYgb3kgPT0gIjIiOgogICAgICAgIG95bGFyWyJTcG9yIl0gPSBveWxhclsiU3BvciJdICsgMQogICAgZWxpZiBveSA9PSAiMyI6CiAgICAgICAgb3lsYXJbIkJ1bG1hY2EiXSA9IG95bGFyWyJCdWxtYWNhIl0gKyAxCmZvciB0dXIgaW4gb3lsYXI6CiAgICBwcmludCh0dXIsIG95bGFyW3R1cl0p", "t53": "YSA9IGludChpbnB1dCgiQmlyaW5jaSBzYXnEsTogIikpCmIgPSBpbnQoaW5wdXQoIsSwa2luY2kgc2F5xLE6ICIpKQpwcmludCgiVG9wbGFtOiIsIGEgKyBiKQ==", "t54": "Zml5YXRsYXIgPSB7InNpbWl0IjogMTUsICJheXJhbiI6IDIwLCAidG9zdCI6IDYwfQpzZXBldCA9IFtdCndoaWxlIFRydWU6CiAgICB1cnVuID0gaW5wdXQoIsOccsO8biAoYml0aXJtZWsgacOnaW4gYml0dGkpOiAiKQogICAgaWYgdXJ1biA9PSAiYml0dGkiOgogICAgICAgIGJyZWFrCiAgICBzZXBldC5hcHBlbmQodXJ1bikKdG9wbGFtID0gMApmb3IgdXJ1biBpbiBzZXBldDoKICAgIHRvcGxhbSA9IHRvcGxhbSArIGZpeWF0bGFyW3VydW5dCnByaW50KCJUb3BsYW06IiwgdG9wbGFtKQ=="};
+var COZ={"t12": "c2F5aSA9IGludChpbnB1dCgiSGFuZ2kgc2F5xLE/ICIpKQpmb3IgaSBpbiByYW5nZSgxLCAxMSk6CiAgICBwcmludChzYXlpLCAieCIsIGksICI9Iiwgc2F5aSAqIGkp", "t13": "Zm9yIGkgaW4gcmFuZ2UoMTApOgogICAgYm95YShpLCBpKQ==", "t14": "Zm9yIGkgaW4gcmFuZ2UoMSwgMTEpOgogICAgcHJpbnQoaSk=", "t15": "dG9wbGFtID0gMAp0dXRhbl9ndW4gPSAwCmZvciBpIGluIHJhbmdlKDcpOgogICAgYWRpbSA9IGludChpbnB1dCgiQnVnw7xuIGthw6cgYWTEsW0gYXR0xLFuPyAiKSkKICAgIHRvcGxhbSA9IHRvcGxhbSArIGFkaW0KICAgIGlmIGFkaW0gPj0gMTAwMDA6CiAgICAgICAgdHV0YW5fZ3VuID0gdHV0YW5fZ3VuICsgMQpwcmludCgiVG9wbGFtIGFkxLFtOiIsIHRvcGxhbSkKcHJpbnQoIkhlZGVmaW4gdHV0dHXEn3UgZ8O8bjoiLCB0dXRhbl9ndW4p", "t22": "c2Fya2lsYXIgPSBbXQpmb3IgaSBpbiByYW5nZSgzKToKICAgIHNhcmtpID0gaW5wdXQoIsWeYXJrxLEgYWTEsTogIikKICAgIHNhcmtpbGFyLmFwcGVuZChzYXJraSkKc2F5YWMgPSAxCmZvciBzYXJraSBpbiBzYXJraWxhcjoKICAgIHByaW50KHNheWFjLCAiLiIsIHNhcmtpKQogICAgc2F5YWMgPSBzYXlhYyArIDE=", "t23": "c3VyZWxlciA9IFszLCA1LCAyLCA2LCA0XQpjdW1hcnRlc2kgPSBpbnQoaW5wdXQoIkN1bWFydGVzaSBrYcOnIHNhYXQ/ICIpKQpzdXJlbGVyLmFwcGVuZChjdW1hcnRlc2kpCnByaW50KCJUb3BsYW06Iiwgc3VtKHN1cmVsZXIpKQ==", "t24": "Z29sbGVyID0gWzIsIDAsIDNdCmdvbGxlci5hcHBlbmQoMSkKcHJpbnQobGVuKGdvbGxlcikp", "t25": "c2tvcmxhciA9IFsxMjAsIDM0MCwgOTAsIDQxMCwgMjc1XQplbl95dWtzZWsgPSBza29ybGFyWzBdCmZvciBza29yIGluIHNrb3JsYXI6CiAgICBpZiBza29yID4gZW5feXVrc2VrOgogICAgICAgIGVuX3l1a3NlayA9IHNrb3IKcHJpbnQoIkVuIHnDvGtzZWsgc2tvcjoiLCBlbl95dWtzZWsp", "t30": "c2F5YWMgPSA1CndoaWxlIHNheWFjID4gMDoKICAgIHByaW50KHNheWFjKQogICAgc2F5YWMgPSBzYXlhYyAtIDEKcHJpbnQoIkJhxZ9sYSEiKQ==", "t32": "YmlyaWtlbiA9IDAKaGFmdGEgPSAwCndoaWxlIGJpcmlrZW4gPCA1MDA6CiAgICBwYXJhID0gaW50KGlucHV0KCJCdSBoYWZ0YSBrYcOnIFRMPyAiKSkKICAgIGJpcmlrZW4gPSBiaXJpa2VuICsgcGFyYQogICAgaGFmdGEgPSBoYWZ0YSArIDEKcHJpbnQoIkhlZGVmZSIsIGhhZnRhLCAiaGFmdGFkYSB1bGHFn3TEsW4iKQ==", "t33": "aGFrID0gMwp3aGlsZSBoYWsgPiAwOgogICAgdGFobWluID0gaW5wdXQoIsWeaWZyZTogIikKICAgIGlmIHRhaG1pbiA9PSAiNDgyMSI6CiAgICAgICAgcHJpbnQoIkHDp8SxbGTEsSIpCiAgICAgICAgYnJlYWsKICAgIGVsc2U6CiAgICAgICAgaGFrID0gaGFrIC0gMQppZiBoYWsgPT0gMDoKICAgIHByaW50KCJLaWxpdGxlbmRpIik=", "t34": "c2F5YWMgPSAxCndoaWxlIHNheWFjIDw9IDM6CiAgICBwcmludCgiVHVyIiwgc2F5YWMpCiAgICBzYXlhYyA9IHNheWFjICsgMQ==", "t35": "d2hpbGUgVHJ1ZToKICAgIHNlY2ltID0gaW5wdXQoIlNlw6dpbSAoMSwgMiwgcSk6ICIpLmxvd2VyKCkKICAgIGlmIHNlY2ltID09ICIxIjoKICAgICAgICBwcmludCgiTWVyaGFiYSEiKQogICAgZWxpZiBzZWNpbSA9PSAiMiI6CiAgICAgICAgZm9yIGkgaW4gcmFuZ2UoMSwgNCk6CiAgICAgICAgICAgIHByaW50KGkpCiAgICBlbGlmIHNlY2ltID09ICJxIjoKICAgICAgICBwcmludCgiR8O2csO8xZ/DvHLDvHoiKQogICAgICAgIGJyZWFrCiAgICBlbHNlOgogICAgICAgIHByaW50KCJHZcOnZXJzaXogc2XDp2ltIik=", "t40": "Zm9ybWFsYXIgPSB7IkFsaSI6IDcsICJFY2UiOiAxMCwgIkNhbiI6IDR9CnByaW50KGZvcm1hbGFyWyJFY2UiXSkKZm9ybWFsYXJbIlN1Il0gPSAxMQpmb3JtYWxhclsiQWxpIl0gPSA5CnByaW50KGxlbihmb3JtYWxhcikp", "t42": "c3RvayA9IHsidG9zdCI6IDEyLCAiYXlyYW4iOiA0LCAic2ltaXQiOiA5fQpzdG9rWyJ0b3N0Il0gPSBzdG9rWyJ0b3N0Il0gLSAyCnN0b2tbInN1Il0gPSAyMApmb3IgdXJ1biBpbiBzdG9rOgogICAgcHJpbnQodXJ1biwgc3Rva1t1cnVuXSkKICAgIGlmIHN0b2tbdXJ1bl0gPCA1OgogICAgICAgIHByaW50KCJhemFsZMSxIik=", "t43": "ZmlsbWxlciA9IHsiVXAiOiA4LCAiQ29jbyI6IDksICJDYXJzIjogNn0KZmlsbWxlclsiQ2FycyJdID0gNwpmaWxtbGVyWyJTb3VsIl0gPSA5CmZvciBmaWxtIGluIGZpbG1sZXI6CiAgICBwcmludChmaWxtLCBmaWxtbGVyW2ZpbG1dKQ==", "t44": "c3RvayA9IHsidG9zdCI6IDEyLCAiYXlyYW4iOiAyMH0KcHJpbnQoc3Rva1sidG9zdCJdKQ==", "t45": "bm90bGFyID0geyJNYXRlbWF0aWsiOiA4MCwgIkZpemlrIjogNzAsICJLaW15YSI6IDkwfQp0b3BsYW0gPSAwCmZvciBkZXJzIGluIG5vdGxhcjoKICAgIHRvcGxhbSA9IHRvcGxhbSArIG5vdGxhcltkZXJzXQpwcmludCgiT3J0YWxhbWE6IiwgdG9wbGFtIC8gbGVuKG5vdGxhcikp", "t51": "aGFyY2FtYWxhciA9IFtdCndoaWxlIFRydWU6CiAgICBjZXZhcCA9IGlucHV0KCJIYXJjYW1hIChiaXRpcm1layBpw6dpbiBiaXR0aSk6ICIpCiAgICBpZiBjZXZhcC5sb3dlcigpID09ICJiaXR0aSI6CiAgICAgICAgYnJlYWsKICAgIGhhcmNhbWFsYXIuYXBwZW5kKGludChjZXZhcCkpCnByaW50KCJUb3BsYW06Iiwgc3VtKGhhcmNhbWFsYXIpKQpidXl1ayA9IDAKZm9yIGhhcmNhbWEgaW4gaGFyY2FtYWxhcjoKICAgIGlmIGhhcmNhbWEgPiAxMDA6CiAgICAgICAgYnV5dWsgPSBidXl1ayArIDEKcHJpbnQoIjEwMCdkZW4gYsO8ecO8ayBoYXJjYW1hIHNhecSxc8SxOiIsIGJ1eXVrKQ==", "t52": "b3lsYXIgPSB7IkFrc2l5b24iOiAwLCAiU3BvciI6IDAsICJCdWxtYWNhIjogMH0Kd2hpbGUgVHJ1ZToKICAgIG95ID0gaW5wdXQoIlPEsXJhZGFraSBveXUgZ2lyaW4gKEFrc2l5b24gacOnaW4gMSwgU3BvciBpw6dpbiAyLCBCdWxtYWNhIGnDp2luIDMsIGJpdGlybWVrIGnDp2luIHEpOiAiKQogICAgaWYgb3kgPT0gInEiOgogICAgICAgIGJyZWFrCiAgICBlbGlmIG95ID09ICIxIjoKICAgICAgICBveWxhclsiQWtzaXlvbiJdID0gb3lsYXJbIkFrc2l5b24iXSArIDEKICAgIGVsaWYgb3kgPT0gIjIiOgogICAgICAgIG95bGFyWyJTcG9yIl0gPSBveWxhclsiU3BvciJdICsgMQogICAgZWxpZiBveSA9PSAiMyI6CiAgICAgICAgb3lsYXJbIkJ1bG1hY2EiXSA9IG95bGFyWyJCdWxtYWNhIl0gKyAxCmZvciB0dXIgaW4gb3lsYXI6CiAgICBwcmludCh0dXIsIG95bGFyW3R1cl0p", "t53": "YSA9IGludChpbnB1dCgiQmlyaW5jaSBzYXnEsTogIikpCmIgPSBpbnQoaW5wdXQoIsSwa2luY2kgc2F5xLE6ICIpKQpwcmludCgiVG9wbGFtOiIsIGEgKyBiKQ==", "t54": "Zml5YXRsYXIgPSB7InNpbWl0IjogMTUsICJheXJhbiI6IDIwLCAidG9zdCI6IDYwfQpzZXBldCA9IFtdCndoaWxlIFRydWU6CiAgICB1cnVuID0gaW5wdXQoIsOccsO8biAoYml0aXJtZWsgacOnaW4gYml0dGkpOiAiKQogICAgaWYgdXJ1biA9PSAiYml0dGkiOgogICAgICAgIGJyZWFrCiAgICBzZXBldC5hcHBlbmQodXJ1bikKdG9wbGFtID0gMApmb3IgdXJ1biBpbiBzZXBldDoKICAgIHRvcGxhbSA9IHRvcGxhbSArIGZpeWF0bGFyW3VydW5dCnByaW50KCJUb3BsYW06IiwgdG9wbGFtKQ==", "e12": "ZGVmIG9ydGFsYW1hKG5vdGxhcik6CiAgICByZXR1cm4gc3VtKG5vdGxhcikgLyBsZW4obm90bGFyKQoKc2luaWYgPSB7IkFsaSI6IFs3MCwgODAsIDkwXSwgIkVjZSI6IFsxMDAsIDkwLCA5NV0sICJDYW4iOiBbNjAsIDc1LCA2MF19CmVuX2l5aSA9ICIiCmVuX3l1a3NlayA9IDAKZm9yIG9ncmVuY2kgaW4gc2luaWY6CiAgICBvcnQgPSBvcnRhbGFtYShzaW5pZltvZ3JlbmNpXSkKICAgIHByaW50KG9ncmVuY2ksIG9ydCkKICAgIGlmIG9ydCA+IGVuX3l1a3NlazoKICAgICAgICBlbl95dWtzZWsgPSBvcnQKICAgICAgICBlbl9peWkgPSBvZ3JlbmNpCnByaW50KCJFbiB5w7xrc2VrIG9ydGFsYW1hOiIsIGVuX2l5aSk=", "e22": "ZGVmIGd1Y2x1X211KHNpZnJlKToKICAgIGlmIGxlbihzaWZyZSkgPCA4OgogICAgICAgIHJldHVybiBGYWxzZQogICAgZm9yIGhhcmYgaW4gc2lmcmU6CiAgICAgICAgaWYgaGFyZiBpbiAiMDEyMzQ1Njc4OSI6CiAgICAgICAgICAgIHJldHVybiBUcnVlCiAgICByZXR1cm4gRmFsc2UKCndoaWxlIFRydWU6CiAgICBzaWZyZSA9IGlucHV0KCLFnmlmcmU6ICIpCiAgICBpZiBndWNsdV9tdShzaWZyZSk6CiAgICAgICAgcHJpbnQoIsWeaWZyZSBrYWJ1bCBlZGlsZGkiKQogICAgICAgIGJyZWFrCiAgICBwcmludCgiWmF5xLFmIMWfaWZyZSIp", "e32": "ZGVmIGthemFuYW4oYSwgYik6CiAgICBpZiBhID09IGI6CiAgICAgICAgcmV0dXJuICJiZXJhYmVyZSIKICAgIGlmIGEgPT0gInQiIGFuZCBiID09ICJtIjoKICAgICAgICByZXR1cm4gImJpcmluY2kiCiAgICBpZiBhID09ICJrIiBhbmQgYiA9PSAidCI6CiAgICAgICAgcmV0dXJuICJiaXJpbmNpIgogICAgaWYgYSA9PSAibSIgYW5kIGIgPT0gImsiOgogICAgICAgIHJldHVybiAiYmlyaW5jaSIKICAgIHJldHVybiAiaWtpbmNpIgoKc2tvciA9IHsiYmlyaW5jaSI6IDAsICJpa2luY2kiOiAwfQp3aGlsZSBza29yWyJiaXJpbmNpIl0gPCAzIGFuZCBza29yWyJpa2luY2kiXSA8IDM6CiAgICBhID0gaW5wdXQoIjEuIG95dW5jdSAodCwgaywgbSk6ICIpCiAgICBiID0gaW5wdXQoIjIuIG95dW5jdSAodCwgaywgbSk6ICIpCiAgICBzb251YyA9IGthemFuYW4oYSwgYikKICAgIGlmIHNvbnVjID09ICJiZXJhYmVyZSI6CiAgICAgICAgcHJpbnQoIkJlcmFiZXJlIikKICAgIGVsc2U6CiAgICAgICAgc2tvcltzb251Y10gPSBza29yW3NvbnVjXSArIDEKICAgIHByaW50KCJTa29yOiIsIHNrb3JbImJpcmluY2kiXSwgIi0iLCBza29yWyJpa2luY2kiXSkKaWYgc2tvclsiYmlyaW5jaSJdID09IDM6CiAgICBwcmludCgiVHVybnV2YXnEsSAxLiBveXVuY3Uga2F6YW5kxLEiKQplbHNlOgogICAgcHJpbnQoIlR1cm51dmF5xLEgMi4gb3l1bmN1IGthemFuZMSxIik="};
 function coz(id){return new TextDecoder().decode(Uint8Array.from(atob(COZ[id]),function(c){return c.charCodeAt(0);}));}
 
 /* ------------------------------------------------------------------ durum */
@@ -618,6 +681,22 @@ var KURULUM=[
 '        return json.dumps(_d["ad"].get(isim), ensure_ascii=False)',
 '    except Exception:',
 '        return "null"',
+'def _cagir(isim, args):',
+'    f = _d["ad"].get(isim)',
+'    if not callable(f):',
+'        return json.dumps({"yok": True})',
+'    _d["n"] = 0; _d["mod"] = "test"; _d["kuyruk"] = []',
+'    sys.settrace(_iz)',
+'    try:',
+'        s = f(*json.loads(args))',
+'    except BaseException as e:',
+'        return json.dumps({"h": type(e).__name__ + ": " + str(e)}, ensure_ascii=False)',
+'    finally:',
+'        sys.settrace(None)',
+'    try:',
+'        return json.dumps({"s": s}, ensure_ascii=False)',
+'    except Exception:',
+'        return json.dumps({"s": str(s)}, ensure_ascii=False)',
 'def _kalan():',
 '    return len(_d["kuyruk"])'
 ].join('\n');
@@ -650,7 +729,7 @@ async function testCalistir(src,girdiler){
  var buf='',boyali={};
  var hata=await pyCalistir(src,'test',girdiler,{yaz:function(m){if(buf.length<60000)buf+=m;},boya:function(s,t){boyali[s+','+t]=1;},kutu:null});
  var kalan=0;try{kalan=py.runPython('_kalan()');}catch(e){}
- return {cikti:buf,hata:hata,sayilar:sayilar(buf),satirlar:buf.split('\n').filter(function(l){return l.trim();}),boyali:Object.keys(boyali),al:al,kalan:kalan};
+ return {cikti:buf,hata:hata,sayilar:sayilar(buf),satirlar:buf.split('\n').filter(function(l){return l.trim();}),boyali:Object.keys(boyali),al:al,kalan:kalan,cagir:function(isim,args){hedef=null;try{var x=JSON.parse(py.runPython('_cagir('+JSON.stringify(isim)+','+JSON.stringify(JSON.stringify(args))+')'));if(x.s===undefined&&!x.h&&!x.yok)x.s=null;return x;}catch(e){return {h:String(e.message||e).trim().split('\n').pop()};}}};
 }
 
 /* ------------------------------------------------------------------ arayüz */
@@ -665,6 +744,9 @@ function navCiz(){
   var b=el('button',(durum.sekme===m.id?'sec ':'')+(n===g.length?'bitti':''),(i+1)+'. '+esc(m.ad)+'<span class="say">'+n+'/'+g.length+'</span>');
   b.onclick=function(){durum.sekme=m.id;kaydet();ciz();window.scrollTo(0,0);};nav.appendChild(b);});
  var b=el('button',durum.sekme==='kasa'?'sec':'','Kasa');b.onclick=function(){durum.sekme='kasa';kaydet();ciz();window.scrollTo(0,0);};nav.appendChild(b);
+ if(durum.acik){var kg=EK.gorevler.filter(function(x){return x.tur==='kod';}),kn=kg.filter(function(x){return durum.tamam[x.id];}).length;
+  var be=el('button',(durum.sekme==='ek'?'sec ':'')+(kn===kg.length?'bitti':''),'Ek görevler<span class="say">'+kn+'/'+kg.length+'</span>');
+  be.onclick=function(){durum.sekme='ek';kaydet();ciz();window.scrollTo(0,0);};nav.appendChild(be);}
 }
 function izgaraCiz(kap,boyali){
  kap.innerHTML='';var z=el('div','izgara');z.appendChild(el('div','no',''));
@@ -691,7 +773,7 @@ function gorevCiz(m,g){
  var etiket=(g.tur==='tahmin'?'<span class="kick">Önce tahmin et</span>':(g.hata?'<span class="kick">Hatayı bul</span>':''));
  kart.appendChild(el('div','gbas',etiket+'<h2>'+esc(g.ad)+'</h2><span class="tik">✓ Tamamlandı</span>'));
  function bitir(){if(durum.tamam[g.id])return;var once=modulTamam(m);durum.tamam[g.id]=true;kaydet();kart.classList.add('tamam');navCiz();parcalariCiz();
-  if(!once&&modulTamam(m))odulGoster(m);}
+  if(!m.ek&&!once&&modulTamam(m))odulGoster(m);}
 
  if(g.tur==='tahmin'){
   kart.appendChild(el('p','giris',bicim(g.soru)));
@@ -719,6 +801,7 @@ function gorevCiz(m,g){
   b.onclick=function(){var acik=kutu.style.display==='none';kutu.style.display=acik?'block':'none';b.textContent=acik?'İpucunu gizle':'İpucu';
    if(acik&&ip[0]&&!durum.ipAcik[anahtar]){durum.ipAcik[anahtar]=1;kaydet();}};
   kap.appendChild(b);kap.appendChild(kutu);}
+ if(g.istek){var ul=el('ol','adim');g.istek.forEach(function(a){ul.appendChild(el('li','',bicim(a)));});kart.appendChild(ul);}
  if(g.adimlar){var ol=el('ol','adim');g.adimlar.forEach(function(a,i){var li=el('li','',bicim(a)+' ');ipucuEkle(li,g.ipucu&&g.ipucu[i],i);ol.appendChild(li);});kart.appendChild(ol);}
  else if(g.ipucu){var ipk=el('div','');ipucuEkle(ipk,g.ipucu[0],0);kart.appendChild(ipk);}
  var iki=el('div','iki'),sol=el('div',''),sag=el('div','');
@@ -798,7 +881,8 @@ function kasaCiz(){
  if(durum.acik){var ng=0;MODULLER.forEach(function(m){m.gorevler.forEach(function(g){if(durum.tamam[g.id])ng++;});});
   k.innerHTML='<p class="acik">Kasa açıldı!</p><p>Beş modülü de tamamladın. Ekranını eğitmenine göster.</p>'+
    '<p class="kucuk">'+ng+' görev · '+Object.keys(durum.ipAcik).length+' açıklama · '+Object.keys(durum.ipKod).length+' kod ipucu</p>'+
-   '<p class="kucuk">İpucu kullanmak öğrenmenin parçası. Bir dahaki sefere daha azıyla dene.</p>';return k;}
+   '<p class="kucuk">İpucu kullanmak öğrenmenin parçası. Bir dahaki sefere daha azıyla dene.</p>';
+  var eb=el('button','b ana','Vaktin varsa: ek görevler');eb.onclick=function(){durum.sekme='ek';kaydet();ciz();window.scrollTo(0,0);};k.appendChild(eb);return k;}
  k.appendChild(el('h2','','Kasa'));
  k.appendChild(el('p','','Her modülü bitirdiğinde şifrenin bir parçasını kazanırsın. Beş parçayı modül sırasıyla yan yana yaz.'));
  var n=MODULLER.filter(modulTamam).length;k.appendChild(el('p','kucuk','Kazanılan parça: '+n+' / 5'));
@@ -815,7 +899,10 @@ function ciz(){
  navCiz();parcalariCiz();ana.innerHTML='';
  if(pyDurum==='yukleniyor')ana.appendChild(el('div','uyari','Python yükleniyor… İlk açılışta yarım dakika kadar sürebilir. Bu sırada "Önce tahmin et" sorularını çözebilirsin.'));
  if(pyDurum==='yok')ana.appendChild(el('div','uyari kotu','Python bu sayfada yüklenemedi. Görevleri JupyterLite\'ta yap; çıktın örnekle aynıysa görevi kendin işaretle.'));
+ if(durum.sekme==='ek'&&!durum.acik)durum.sekme='kasa';
  if(durum.sekme==='kasa'){ana.appendChild(kasaCiz());}
+ else if(durum.sekme==='ek'){ana.appendChild(el('section','gorev bilgi','<div class="gbas"><span class="kick hat">Kasadan sonra</span><h2>Ek görevler</h2></div><p class="giris">Kasayı açtın. Bu üç görev daha zor: adım adım yönerge yok, ne yapılacağına sen karar veriyorsun. Üçünde de kendi fonksiyonunu yazman gerekiyor. Her görevden önce, o görevde işine yarayacak yeni bir bilgiyi gösteren kısa bir soru var.</p>'));
+  EK.gorevler.forEach(function(g){ana.appendChild(gorevCiz(EK,g));});}
  else{var m=MODULLER.filter(function(x){return x.id===durum.sekme;})[0]||MODULLER[0];
   if(m.bilgi){var bk=el('section','gorev bilgi','<div class="gbas"><span class="kick hat">Kısa hatırlatma</span><h2>'+esc(m.ad)+'</h2></div>');
    m.bilgi.metin.forEach(function(t){bk.appendChild(el('p','giris',bicim(t)));});
@@ -847,7 +934,7 @@ document.getElementById('temaB').onclick=function(){temaAc(false);};
 if(durum.tema)temaUygula(durum.tema);
 
 /* test ve eğitmen için */
-window.KK={moduller:MODULLER,kontrol:async function(id,src){var g=null;MODULLER.forEach(function(m){m.gorevler.forEach(function(x){if(x.id===id)g=x;});});
+window.KK={moduller:MODULLER,ek:EK,kontrol:async function(id,src){var g=null;MODULLER.concat([EK]).forEach(function(m){m.gorevler.forEach(function(x){if(x.id===id)g=x;});});
  return g.kontrol(function(girdiler){return testCalistir(src,girdiler);},src);},hazir:function(){return pyDurum;}};
 
 ciz();
