@@ -734,7 +734,9 @@ function gorevCiz(m,g){
    ta.setRangeText('\n'+gir,ta.selectionStart,ta.selectionEnd,'end');ta.dispatchEvent(new Event('input'));}
  });
  var ed=el('div','ed'),boya2=el('pre','hl');ed.appendChild(ta);ed.appendChild(boya2);sol.appendChild(ed);
- function renklendir(){boya2.innerHTML=hl(ta.value)+'\n ';boya2.scrollTop=ta.scrollTop;boya2.scrollLeft=ta.scrollLeft;}
+ function renklendir(){boya2.innerHTML=hl(ta.value)+'\n ';
+  ta.style.height='auto';ta.style.height=Math.min(760,Math.max(230,ta.scrollHeight+4))+'px';
+  boya2.scrollTop=ta.scrollTop;boya2.scrollLeft=ta.scrollLeft;}
  ta.addEventListener('input',renklendir);ta.addEventListener('scroll',function(){boya2.scrollTop=ta.scrollTop;boya2.scrollLeft=ta.scrollLeft;});renklendir();
  var btns=el('div','btns'),calistirB=el('button','b ana','▶ Çalıştır'),kontrolB=el('button','b','Kontrol et');
  var ornekB=el('button','b','Çalışan hâlini dene');ornekB.title='Kodu göstermez; programın bitmiş hâlini çalıştırır';
