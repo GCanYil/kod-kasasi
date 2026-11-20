@@ -1,0 +1,811 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kod Kasası</title>
+<style>
+:root{--bg:#101318;--fg:#f5f5f2;--mut:#b4bcc8;--panel:#1c212a;--panel2:#262c37;--line:#3a4250;--acc:#ffd166;
+--outbg:#05070a;--err:#ff8a80;--ok:#a8e6a1;--b:#8cc8ff}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+ line-height:1.5;font-size:17px;padding-bottom:80px}
+code,pre,textarea,.mono{font-family:Consolas,"SF Mono",Menlo,"DejaVu Sans Mono",monospace}
+code{color:var(--acc);font-size:.95em}
+header{position:sticky;top:0;z-index:10;background:rgba(16,19,24,.96);border-bottom:2px solid var(--line);padding:12px 16px}
+.ust{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
+h1{font-size:26px;color:var(--acc);font-family:Consolas,"SF Mono",Menlo,monospace;margin-right:auto}
+.parcalar{display:flex;gap:8px;align-items:center}
+.parcalar span.et{color:var(--mut);font-size:14px;margin-right:4px}
+.parca{min-width:54px;height:40px;border:2px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;
+ font-family:Consolas,"SF Mono",Menlo,monospace;font-weight:800;font-size:19px;color:var(--mut);padding:0 8px}
+.parca.var{border-style:solid;border-color:var(--acc);color:var(--acc);background:#3a3214}
+nav{max-width:1180px;margin:10px auto 0;display:flex;flex-wrap:wrap;gap:8px}
+nav button{font:inherit;font-size:15px;font-weight:700;padding:8px 14px;border-radius:10px;border:2px solid var(--line);
+ background:var(--panel);color:var(--fg);cursor:pointer}
+nav button .say{color:var(--mut);font-weight:400;margin-left:6px}
+nav button.sec{border-color:var(--acc);color:var(--acc)}
+nav button.bitti .say{color:var(--ok);font-weight:700}
+main{max-width:1180px;margin:0 auto;padding:22px 16px;display:flex;flex-direction:column;gap:22px}
+.uyari{border:2px solid var(--acc);border-radius:12px;padding:12px 16px;background:#2a2412;font-size:15px}
+.uyari.kotu{border-color:var(--err);background:#2a1614}
+.gorev{background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:20px 22px;display:flex;flex-direction:column;gap:14px}
+.gorev.tamam{border-color:#4d7a4b}
+.gbas{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.gbas h2{font-size:22px}
+.kick{font-size:13px;font-weight:700;letter-spacing:.04em;color:#14171c;background:var(--acc);padding:3px 10px;border-radius:6px}
+.kick.hat{background:var(--b)}
+.gorev.bilgi{border-color:#3d5a78}
+button.ipb{font:inherit;font-size:13px;font-weight:700;padding:2px 10px;border-radius:999px;border:2px solid var(--line);background:none;color:var(--b);cursor:pointer;vertical-align:1px}
+button.ipb:hover{border-color:var(--b)}
+.ipucu{margin:8px 0 4px;border-left:4px solid var(--b);background:var(--panel2);border-radius:0 10px 10px 0;padding:10px 14px;font-size:16px}
+.ipucu pre{margin-top:6px;font-size:16px;line-height:1.4;color:var(--fg);overflow-x:auto}
+.cubuk i{position:absolute;bottom:-26px;left:0;right:0;text-align:center;font-size:13px;font-style:normal;color:var(--mut)}
+.cubuklar{margin-bottom:30px}
+.tik{margin-left:auto;color:var(--ok);font-weight:800;font-size:15px;display:none}
+.gorev.tamam .tik{display:block}
+.giris{color:var(--fg)}
+ol.adim{counter-reset:s;list-style:none;display:flex;flex-direction:column;gap:8px}
+ol.adim li{counter-increment:s;padding-left:40px;position:relative}
+ol.adim li::before{content:counter(s);position:absolute;left:0;top:1px;width:26px;height:26px;border-radius:50%;background:var(--acc);
+ color:#14171c;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center}
+.iki{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media(max-width:860px){.iki{grid-template-columns:minmax(0,1fr)}}
+.lbl{font-size:13px;color:var(--mut);font-weight:700;letter-spacing:.04em;margin-bottom:4px}
+textarea{width:100%;min-height:230px;background:var(--outbg);color:var(--fg);border:2px solid var(--line);border-radius:12px;
+ padding:12px 14px;font-size:17px;line-height:1.45;resize:vertical;tab-size:4}
+textarea:focus{outline:none;border-color:var(--acc)}
+pre.kod{background:var(--outbg);border:2px solid var(--line);border-radius:12px;padding:12px 14px;font-size:17px;line-height:1.45;overflow-x:auto}
+pre.ornek{background:var(--outbg);border:2px dashed var(--line);border-radius:12px;padding:10px 14px;font-size:15px;line-height:1.4;color:var(--mut);overflow-x:auto}
+.cikti{background:var(--outbg);border:2px solid var(--line);border-radius:12px;padding:12px 14px;min-height:110px;max-height:340px;overflow:auto;
+ font-family:Consolas,"SF Mono",Menlo,monospace;font-size:16px;white-space:pre-wrap;word-break:break-word}
+.cikti .hata{color:var(--err)}
+.cikti input{font:inherit;background:var(--panel2);color:var(--acc);border:2px solid var(--acc);border-radius:6px;padding:1px 8px;min-width:200px;outline:none}
+.cikti .gir{color:var(--acc)}
+.cikti .sis{color:var(--mut);font-style:italic}
+.btns{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button.b{font:inherit;font-size:16px;font-weight:700;padding:9px 16px;border-radius:10px;border:2px solid var(--line);background:var(--panel2);
+ color:var(--fg);cursor:pointer}
+button.b:hover:not(:disabled){border-color:var(--acc)}
+button.b.ana{background:var(--acc);color:#14171c;border-color:var(--acc)}
+button.b:disabled{opacity:.45;cursor:default}
+.sonuc{font-weight:600;font-size:16px}
+.sonuc.iyi{color:var(--ok)}.sonuc.kotu{color:var(--err)}
+.secenek{display:flex;flex-direction:column;gap:8px}
+.secenek button{font:inherit;text-align:left;padding:10px 14px;border-radius:10px;border:2px solid var(--line);background:var(--panel2);color:var(--fg);cursor:pointer}
+.secenek button:hover{border-color:var(--acc)}
+.secenek button.dogru{border-color:var(--ok);background:#1d2b1c}
+.secenek button.yanlis{border-color:var(--err);opacity:.6}
+.izgara{display:grid;grid-template-columns:22px repeat(10,1fr);gap:2px;max-width:330px}
+.izgara div{aspect-ratio:1;border-radius:3px;background:var(--panel2);font-size:12px;color:var(--mut);display:flex;align-items:center;justify-content:center;
+ font-family:Consolas,"SF Mono",Menlo,monospace}
+.izgara .no{background:none}
+.izgara .dolu{background:var(--acc)}
+.cubuklar{display:flex;align-items:flex-end;gap:10px;height:190px;padding:8px 4px 0;border-bottom:2px solid var(--line)}
+.cubuk{flex:1;max-width:60px;background:var(--acc);border-radius:6px 6px 0 0;position:relative;min-height:2px}
+.cubuk span{position:absolute;top:-24px;left:0;right:0;text-align:center;font-size:14px;font-family:Consolas,"SF Mono",Menlo,monospace}
+.kartlar{display:flex;flex-wrap:wrap;gap:10px}
+.kart{border:2px solid var(--acc);border-radius:12px;padding:10px 16px;background:var(--panel2);min-width:110px;text-align:center}
+.kart b{display:block;font-size:17px}.kart span{font-size:28px;font-weight:800;color:var(--acc);font-family:Consolas,"SF Mono",Menlo,monospace}
+.bos{color:var(--mut);font-size:15px}
+.odul{border:3px solid var(--acc);border-radius:16px;padding:20px 22px;background:#2a2412;text-align:center}
+.odul .buyuk{font-size:44px;font-weight:800;color:var(--acc);font-family:Consolas,"SF Mono",Menlo,monospace;letter-spacing:.08em}
+.kasa{display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center;padding:30px 20px}
+.kasa input{font-family:Consolas,"SF Mono",Menlo,monospace;font-size:30px;text-align:center;letter-spacing:.1em;background:var(--outbg);color:var(--acc);
+ border:3px solid var(--line);border-radius:12px;padding:10px 14px;width:min(420px,100%);outline:none;text-transform:uppercase}
+.kasa input:focus{border-color:var(--acc)}
+.acik{font-size:54px;font-weight:800;color:var(--ok)}
+.kucuk{font-size:14px;color:var(--mut)}
+a.sifirla{color:var(--mut);font-size:13px;cursor:pointer;text-decoration:underline}
+</style>
+</head>
+<body>
+<header>
+ <div class="ust">
+  <h1>Kod Kasası</h1>
+  <div class="parcalar" id="parcalar"></div>
+ </div>
+ <nav id="nav"></nav>
+</header>
+<main id="ana"></main>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js"></script>
+<script>
+(function(){
+'use strict';
+/* ------------------------------------------------------------------ yardımcılar */
+function tr(s){return String(s).toLocaleLowerCase('tr');}
+function sayilar(s){return (String(s).match(/-?\d+(?:\.\d+)?/g)||[]).map(Number);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function bicim(s){return esc(s).split('`').map(function(p,i){return i%2?'<code>'+p+'</code>':p;}).join('');}
+function ayni(a,b){return JSON.stringify(a)===JSON.stringify(b);}
+function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+function varMi(r,n){return r.sayilar.some(function(x){return Math.abs(x-n)<1e-9;});}
+
+/* ------------------------------------------------------------------ görevler */
+var P=[[75,68],[87,68],[86,76,93],[78,82,71],[53,57]];
+function parca(i){return String.fromCharCode.apply(null,P[i].map(function(c){return c-3;}));}
+function soz(x){return x&&typeof x==='object'&&!Array.isArray(x);}
+
+var MODULLER=[
+{id:'m1',ad:'for + range',
+ bilgi:{metin:['`for` bir işi belli sayıda tekrarlar. Döngünün içindeki satırlar girintili yazılır; girintisiz ilk satır döngü bittikten sonra çalışır.',
+  '`range(4)` 0, 1, 2, 3 sayılarını verir. `range(1, 4)` 1, 2, 3 sayılarını verir: başlangıç dahil, bitiş dahil değil.'],
+  ornekler:['for i in range(1, 4):\n    print("Tur", i)\nprint("Bitti")',
+   'toplam = 0\nfor i in range(1, 4):\n    toplam = toplam + i\nprint(toplam)']},
+ gorevler:[
+ {id:'t11',tur:'tahmin',ad:'Geri sayım',soru:'Bir roket fırlatılmadan önce geri sayım yapılıyor. Bu kod alt alta hangi sayıları yazar?',
+  kod:'for i in range(5):\n    print(10 - i)',
+  secenekler:['10, 9, 8, 7, 6','10, 9, 8, 7, 6, 5','9, 8, 7, 6, 5','5, 4, 3, 2, 1'],dogru:0,
+  aciklama:'`range(5)` 0, 1, 2, 3, 4 verir; her turda 10 eksi sayaç yazılır.'},
+ {id:'t12',tur:'kod',ad:'Çarpım tablosu',
+  giris:'Küçük kardeşin çarpım tablosunu ezberliyor ve her gün başka bir sayıyı çalışıyor. Ona yardım etmek için, istediği sayının 1\'den 10\'a kadar çarpım tablosunu ekrana yazan bir program yaz.',
+  adimlar:['Kullanıcıya "Hangi sayı? " diye sor; cevabı sayıya çevirip bir değişkene ata.',
+   '1\'den 10\'a kadar sayan bir döngü kur.',
+   'Her turda sayıyı, sayacı ve ikisinin çarpımını `7 x 3 = 21` biçiminde yazdır.'],
+  ipucu:[['`input` her zaman metin verir; çarpma yapabilmek için `int` ile sayıya çevir.','sayi = int(input("Hangi sayı? "))'],
+   ['`range` bitiş sayısını almaz; 10\'un da gelmesi için bitişe 11 yaz.','for i in range(1, 11):'],
+   ['`print` içine virgülle ayırarak birden çok şey yazabilirsin. Bu satır döngünün içinde, girintili olmalı.','    print(sayi, "x", i, "=", sayi * i)']],
+  ornek:'Hangi sayı? 7\n7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n...\n7 x 10 = 70',
+  kontrol:async function(T){var ns=[7,3];for(var i=0;i<ns.length;i++){var n=ns[i],r=await T([String(n)]);if(r.hata)return r.hata;
+    for(var k=1;k<=10;k++)if(!varMi(r,n*k))return 'Sayı '+n+' girildiğinde çıktıda '+(n*k)+' sonucunu göremedim.';
+    if(r.satirlar.length<10)return 'Sayı '+n+' için 10 satır bekliyordum, '+r.satirlar.length+' satır yazıldı.';}
+   return null;}},
+ {id:'t13',tur:'kod',ad:'Piksel çizgi',gorsel:'izgara',
+  giris:'Eski oyunlardaki resimler küçük karelerden (piksellerden) oluşur. Yandaki 10×10 alan senin ekranın. `boya(sutun, satir)` yazınca o kare boyanır. Sütunlar soldan sağa, satırlar yukarıdan aşağıya 0\'dan 9\'a kadar numaralıdır. Örnek:',
+  gosterKod:'boya(0, 0)    # sol üst köşedeki kare\nboya(3, 1)    # 3 numaralı sütun, 1 numaralı satır',
+  giris2:'Amaç: sol üst köşeden sağ alt köşeye çapraz bir çizgi çizmek. Bunun için 10 kareyi tek tek yazmak yerine döngü kullan.',
+  adimlar:['Önce dene: yalnız `boya(0, 0)` yazıp çalıştır ve hangi karenin boyandığına bak. Sonra `boya(3, 1)` satırını ekleyip yeniden çalıştır.',
+   'Bu iki satırı sil. 0\'dan 9\'a kadar sayan bir döngü kur.',
+   'Her turda sütun numarası da satır numarası da sayaca eşit olan kareyi boya.'],
+  ipucu:[['Kod kutusuna yalnız şunu yazıp Çalıştır\'a bas:','boya(0, 0)\nboya(3, 1)'],
+   ['`range(10)` 0\'dan 9\'a kadar sayar.','for i in range(10):'],
+   ['Çapraz çizgideki kareler (0, 0), (1, 1), (2, 2)… diye gider: iki sayı hep aynı. İkisine de sayacı yaz.','    boya(i, i)']],
+  kontrol:async function(T){var r=await T([]);if(r.hata)return r.hata;var b=r.boyali;if(!b.length)return 'Hiç kare boyanmadı.';
+   var dogru=0,fazla=0;b.forEach(function(k){var p=k.split(',');if(p[0]===p[1])dogru++;else fazla++;});
+   if(dogru<10)return 'Çapraz çizgideki 10 kareden '+dogru+' tanesi boyalı.';
+   if(fazla)return 'Çizginin dışında '+fazla+' kare daha boyalı. Deneme satırlarını sildin mi?';return null;}},
+ {id:'t14',tur:'kod',hata:true,ad:'Saklambaç',
+  giris:'Saklambaçta ebe 1\'den 10\'a kadar sayar. Bu program ebenin sayışını yazdırmalı, yani ekranda 1\'den 10\'a kadar bütün sayılar görünmeli. Ama bir sayı eksik çıkıyor. Çalıştır, sorunu bul ve düzelt.',
+  baslangic:'for i in range(1, 10):\n    print(i)',
+  ipucu:[['`range(1, 10)` 1\'den başlar ama 10\'u almaz, 9\'da durur. 10\'un da gelmesi için bitişi bir büyüt.','for i in range(1, 11):']],
+  kontrol:async function(T){var r=await T([]);if(r.hata)return r.hata;
+   return ayni(r.sayilar,[1,2,3,4,5,6,7,8,9,10])?null:'Çıktı 1\'den 10\'a kadar olan sayılar olmalı; şu an: '+r.sayilar.join(', ');}},
+ {id:'t15',tur:'kod',ek:true,ad:'Adım hedefi',
+  giris:'Elif sağlıklı yaşamak için kendine bir hedef koydu: her gün en az 10000 adım atmak. Telefonu her gün kaç adım attığını gösteriyor. Hafta bitince iki şeyi merak ediyor: bu hafta toplam kaç adım attı ve 7 günün kaçında hedefini tutturdu? Bunu hesaplayan programı yaz. Bir günde 10000 ya da daha fazla adım atıldıysa o gün hedef tutmuş sayılır.',
+  adimlar:['Toplam adım için bir değişken, hedefin tuttuğu günleri saymak için bir değişken daha oluştur; ikisi de 0\'dan başlasın.',
+   '7 kez dönen bir döngü kur; her turda "Bugün kaç adım attın? " diye sor ve cevabı sayıya çevir.',
+   'O günün adım sayısını toplama ekle.',
+   'O günün adım sayısı 10000 ya da daha fazlaysa hedefin tuttuğu gün sayısını 1 artır.',
+   'Döngü bitince toplam adımı ve hedefin tuttuğu gün sayısını yazdır.'],
+  ipucu:[['İki değişken de döngüden önce, en üstte olmalı.','toplam = 0\ntutan_gun = 0'],
+   ['Haftada 7 gün var: `range(7)`. Soru döngünün içinde olmalı ki 7 kez sorulsun.','for i in range(7):\n    adim = int(input("Bugün kaç adım attın? "))'],
+   ['Toplam kalıbı: eski toplamın üstüne yeni sayıyı ekle.','    toplam = toplam + adim'],
+   ['"Ya da daha fazla" için `>=` kullanılır. `if` döngünün içinde olmalı.','    if adim >= 10000:\n        tutan_gun = tutan_gun + 1'],
+   ['Bu satırlar döngüden sonra, girintisiz yazılır.','print("Toplam adım:", toplam)\nprint("Hedefin tuttuğu gün:", tutan_gun)']],
+  ornek:'Bugün kaç adım attın? 8000\nBugün kaç adım attın? 12000\n... (7 gün)\nToplam adım: 66000\nHedefin tuttuğu gün: 3',
+  kontrol:async function(T){var ts=[[[8000,12000,5000,10000,15000,7000,9000],66000,3],[[1000,1000,1000,1000,1000,1000,20000],26000,1]];
+   for(var i=0;i<ts.length;i++){var r=await T(ts[i][0].map(String));if(r.hata)return r.hata;
+    if(!varMi(r,ts[i][1]))return 'Adımlar '+ts[i][0].join(', ')+' girildiğinde toplam '+ts[i][1]+' olmalı; çıktıda göremedim.';
+    if(!varMi(r,ts[i][2]))return 'Adımlar '+ts[i][0].join(', ')+' girildiğinde hedefin tuttuğu gün sayısı '+ts[i][2]+' olmalı; çıktıda göremedim.';}
+   return null;}}
+]},
+{id:'m2',ad:'Liste',
+ bilgi:{metin:['Liste, birçok değeri tek bir değişkende sırayla tutar. Elemanlar köşeli parantez içinde, virgülle ayrılır.',
+  'Her elemanın bir sıra numarası (indeks) vardır ve saymaya 0\'dan başlanır. `len` listede kaç eleman olduğunu söyler; `append` listenin sonuna eleman ekler.'],
+  ornekler:['meyveler = ["elma", "muz", "kivi"]\nprint(meyveler[0])\nprint(len(meyveler))\nmeyveler.append("çilek")\nprint(meyveler)',
+   'meyveler = ["elma", "muz", "kivi"]\nfor meyve in meyveler:\n    print(meyve)']},
+ gorevler:[
+ {id:'t21',tur:'tahmin',ad:'Kulübün oyunları 1',soru:'Bir oyun kulübü oynadığı oyunları bir listede tutuyor. Bu kod ne yazar?',
+  kod:'oyunlar = ["Satranç", "Tavla", "Okey", "Dama"]\nprint(oyunlar[1])',
+  secenekler:['Satranç','Tavla','Okey','1'],dogru:1,
+  aciklama:'İndeks 0\'dan başlar: `oyunlar[0]` Satranç, `oyunlar[1]` Tavla.'},
+ {id:'t26',tur:'tahmin',ad:'Kulübün oyunları 2',soru:'Aynı oyun kulübünün listesi. Bu kod ne yazar?',
+  kod:'oyunlar = ["Satranç", "Tavla", "Okey", "Dama"]\nprint(len(oyunlar))',
+  secenekler:['3','Dama','4','5'],dogru:2,
+  aciklama:'`len` listede kaç eleman olduğunu söyler: 4 oyun var.'},
+ {id:'t27',tur:'tahmin',ad:'Kulübün oyunları 3',soru:'Listede 4 oyun var, yani `len(oyunlar)` 4 eder. Bu kod ne yazar?',
+  kod:'oyunlar = ["Satranç", "Tavla", "Okey", "Dama"]\nprint(oyunlar[len(oyunlar) - 1])',
+  secenekler:['Okey','3','Hata verir','Dama'],dogru:3,
+  aciklama:'4 - 1 = 3 ve `oyunlar[3]` son eleman olan Dama\'dır. Son elemanın indeksi her zaman uzunluğun bir eksiğidir.'},
+ {id:'t22',tur:'kod',ad:'Çalma listesi',
+  giris:'Bir müzik uygulaması yapıyorsun. Kullanıcı sevdiği üç şarkının adını yazacak; uygulama bu şarkıları bir listede saklayacak ve sonra numaralı bir çalma listesi olarak ekrana yazacak.',
+  adimlar:['`sarkilar` adlı boş bir liste oluştur.',
+   '3 kez dönen bir döngü kur; her turda "Şarkı adı: " diye sor ve cevabı listenin sonuna ekle.',
+   'Numara için bir sayaç değişkeni oluştur ve 1\'den başlat.',
+   'Listeyi bir döngüyle dolaş; her şarkıyı numarasıyla birlikte yazdır ve sayacı 1 artır.'],
+  ipucu:[['Boş liste, içi boş köşeli parantezdir.','sarkilar = []'],
+   ['`append` listenin sonuna ekler. Başına `sarkilar =` yazma; `append` listeyi kendisi değiştirir.','for i in range(3):\n    sarki = input("Şarkı adı: ")\n    sarkilar.append(sarki)'],
+   ['Bu satır ilk döngü bittikten sonra, girintisiz yazılır.','sayac = 1'],
+   ['`for sarki in sarkilar` her turda sıradaki şarkıyı verir.','for sarki in sarkilar:\n    print(sayac, ".", sarki)\n    sayac = sayac + 1']],
+  ornek:'Şarkı adı: Deniz\nŞarkı adı: Yol\nŞarkı adı: Gece\n1 . Deniz\n2 . Yol\n3 . Gece',
+  kontrol:async function(T){var g=['Mavikus','Sarikedi','Kirmizibalon'];var r=await T(g);if(r.hata)return r.hata;
+   var s=r.al('sarkilar');if(!Array.isArray(s))return '`sarkilar` adlı bir liste bulamadım.';
+   if(!ayni(s,g))return '`sarkilar` listesinde girilen üç şarkı sırayla olmalı; şu an '+s.length+' eleman var.';
+   for(var i=0;i<3;i++){var ok=r.satirlar.some(function(l){return l.indexOf(g[i])>=0&&sayilar(l).indexOf(i+1)>=0;});
+    if(!ok)return (i+1)+'. şarkının numarasıyla aynı satırda yazdırıldığını göremedim.';}
+   return null;}},
+ {id:'t23',tur:'kod',ad:'Ekran süresi grafiği',gorsel:'cubuk',gdeg:'sureler',getiket:['Pzt','Sal','Çar','Per','Cum','Cmt'],
+  giris:'Deniz telefonda çok vakit geçirdiğini düşünüyor ve her gün kaç saat telefona baktığını not ediyor. Bu hafta notları şöyle: Pazartesi 3 saat, Salı 5 saat, Çarşamba 2 saat, Perşembe 6 saat, Cuma 4 saat. Cumartesi gününü henüz yazmadı. Bu süreleri bir listede tutan, Cumartesi\'yi kullanıcıya sorup ekleyen ve haftanın toplamını söyleyen bir program yaz. Kodunu çalıştırınca liste yanda çubuk grafik olarak çizilir.',
+  adimlar:['`sureler` adlı bir liste oluştur; içine Pazartesi\'den Cuma\'ya kadar olan süreleri sırayla koy: 3, 5, 2, 6, 4.',
+   'Kullanıcıya "Cumartesi kaç saat? " diye sor; cevabı sayıya çevirip listenin sonuna ekle.',
+   'Haftalık toplam süreyi yazdır.'],
+  ipucu:[['Sayılar tırnaksız yazılır.','sureler = [3, 5, 2, 6, 4]'],
+   ['Önce sayıya çevir, sonra `append` ile ekle.','cumartesi = int(input("Cumartesi kaç saat? "))\nsureler.append(cumartesi)'],
+   ['`sum` bir listedeki sayıların toplamını verir.','print("Toplam:", sum(sureler))']],
+  ornek:'Cumartesi kaç saat? 7\nToplam: 27',
+  kontrol:async function(T){var ts=[[7,27],[1,21]];for(var i=0;i<2;i++){var r=await T([String(ts[i][0])]);if(r.hata)return r.hata;
+    var s=r.al('sureler');if(!Array.isArray(s))return '`sureler` adlı bir liste bulamadım.';
+    if(!ayni(s,[3,5,2,6,4,ts[i][0]]))return 'Cumartesi için '+ts[i][0]+' girildiğinde liste 3, 5, 2, 6, 4, '+ts[i][0]+' olmalı; şu an: '+JSON.stringify(s);
+    if(!varMi(r,ts[i][1]))return 'Cumartesi için '+ts[i][0]+' girildiğinde toplam '+ts[i][1]+' olmalı; çıktıda göremedim.';}
+   return null;}},
+ {id:'t24',tur:'kod',hata:true,ad:'Dördüncü maç',
+  giris:'Bir futbol takımı her maçta attığı gol sayısını bir listede tutuyor. İlk üç maçta 2, 0 ve 3 gol attılar. Dördüncü maçta 1 gol attılar. Bu program dördüncü maçın golünü listeye ekleyip takımın toplam kaç maç oynadığını (4) yazdırmalı. Ama hata veriyor. Çalıştır, sorunu bul ve düzelt.',
+  baslangic:'goller = [2, 0, 3]\ngoller = goller.append(1)\nprint(len(goller))',
+  ipucu:[['`append` listeyi kendisi değiştirir ve geriye bir şey vermez. Başına `goller =` yazınca liste kaybolur. İkinci satır yalnız şöyle olmalı:','goller.append(1)']],
+  kontrol:async function(T){var r=await T([]);if(r.hata)return r.hata;
+   if(!ayni(r.al('goller'),[2,0,3,1]))return '`goller` listesi 2, 0, 3, 1 olmalı.';
+   return varMi(r,4)?null:'Çıktıda maç sayısını (4) göremedim.';}},
+ {id:'t25',tur:'kod',ek:true,ad:'Rekor skor',
+  giris:'Bir oyuncu aynı oyunu beş kez oynadı ve her seferinde aldığı puanı not etti: 120, 340, 90, 410, 275. Oyunun "rekor" ekranında bu puanların en yükseği gösterilecek. Listedeki en yüksek puanı bulan programı yaz.',
+  adimlar:['`skorlar` adlı listeyi bu beş puanla oluştur.',
+   '`en_yuksek` adlı bir değişken oluştur ve listenin ilk puanını ata.',
+   'Listeyi bir döngüyle dolaş; sıradaki puan `en_yuksek` değerinden büyükse `en_yuksek` değişkenine o puanı ata.',
+   'Döngü bitince `en_yuksek` değerini yazdır.'],
+  ipucu:[['','skorlar = [120, 340, 90, 410, 275]'],
+   ['İlk eleman 0 numaralı indekstedir. Şimdilik "en yüksek" odur; daha büyüğünü görünce değiştireceğiz.','en_yuksek = skorlar[0]'],
+   ['Her puanı elindeki en yüksekle karşılaştır; daha büyükse yenisini tut.','for skor in skorlar:\n    if skor > en_yuksek:\n        en_yuksek = skor'],
+   ['Bu satır döngüden sonra, girintisiz yazılır.','print("En yüksek skor:", en_yuksek)']],
+  ornek:'En yüksek skor: 410',
+  kontrol:async function(T){var r=await T([]);if(r.hata)return r.hata;
+   if(r.al('en_yuksek')!==410)return '`en_yuksek` değişkeni program bitince 410 olmalı.';
+   return varMi(r,410)?null:'Çıktıda 410 sonucunu göremedim.';}}
+]},
+{id:'m3',ad:'while',
+ bilgi:{metin:['`while`, yanındaki koşul doğru olduğu sürece içindeki satırları tekrarlar. Her turdan önce koşula yeniden bakar; koşul yanlış olunca döngü biter.',
+  'Döngünün içinde koşulu değiştiren bir satır olmalı. Yoksa koşul hep doğru kalır ve döngü hiç durmaz.',
+  'Kaç tur döneceği baştan belli değilse `while True` yazılır ve çıkmak istenen yerde `break` kullanılır.'],
+  ornekler:['sayac = 1\nwhile sayac <= 3:\n    print("Tur", sayac)\n    sayac = sayac + 1\nprint("Bitti")',
+   'sayac = 1\nwhile True:\n    print("Tur", sayac)\n    if sayac == 2:\n        break\n    sayac = sayac + 1\nprint("Bitti")']},
+ gorevler:[
+ {id:'t31',tur:'tahmin',ad:'Kaç kez yazar? 1',soru:'Bu program ekrana kaç kez "Merhaba" yazar?',
+  kod:'sayac = 1\nwhile sayac <= 3:\n    print("Merhaba")\n    sayac = sayac + 1',
+  secenekler:['1 kez','2 kez','3 kez','4 kez'],dogru:2,
+  aciklama:'`sayac` 1, 2 ve 3 iken koşul doğru. 4 olunca koşul yanlış olur ve döngü biter.'},
+ {id:'t36',tur:'tahmin',ad:'Kaç kez yazar? 2',soru:'Bu kez `sayac` 5\'ten başlıyor. Program ekrana kaç kez "Merhaba" yazar?',
+  kod:'sayac = 5\nwhile sayac <= 3:\n    print("Merhaba")\n    sayac = sayac + 1',
+  secenekler:['Hiç yazmaz','1 kez','3 kez','Durmadan yazar'],dogru:0,
+  aciklama:'Koşula ilk bakışta 5 <= 3 yanlış. Döngünün içine hiç girilmez.'},
+ {id:'t37',tur:'tahmin',ad:'Kaç kez yazar? 3',soru:'Bu programda `sayac = sayac + 1` satırı yok. Program ekrana kaç kez "Merhaba" yazar?',
+  kod:'sayac = 1\nwhile sayac <= 3:\n    print("Merhaba")',
+  secenekler:['1 kez','3 kez','Hiç yazmaz','Durmadan yazar'],dogru:3,
+  aciklama:'`sayac` hiç değişmiyor, hep 1. Koşul hep doğru kalır ve döngü durmaz.'},
+ {id:'t30',tur:'kod',ad:'Yarış başlıyor',
+  giris:'Bir koşu yarışında hakem yarışı başlatmadan önce geriye doğru sayar: 5, 4, 3, 2, 1 ve sonra "Başla!" der. Hakemin bu sayışını ekrana yazan bir program yaz. Sayıları tek tek yazmak yerine `while` döngüsü kullan.',
+  adimlar:['`sayac` adlı bir değişken oluştur ve 5 ata.',
+   '`sayac` 0\'dan büyük olduğu sürece dönen bir döngü kur.',
+   'Her turda `sayac` değerini yazdır, sonra `sayac` değerini 1 azalt.',
+   'Döngü bitince "Başla!" yazdır.'],
+  ipucu:[['','sayac = 5'],
+   ['Koşul doğru olduğu sürece döngü döner.','while sayac > 0:'],
+   ['Azaltma satırını unutursan sayaç hep 5 kalır ve döngü durmaz. İki satır da döngünün içinde, girintili olmalı.','    print(sayac)\n    sayac = sayac - 1'],
+   ['Bu satır girintisiz yazılır ki yalnız bir kez, döngüden sonra çalışsın.','print("Başla!")']],
+  ornek:'5\n4\n3\n2\n1\nBaşla!',
+  kontrol:async function(T){var r=await T([]);if(r.hata)return r.hata;
+   if(!ayni(r.sayilar,[5,4,3,2,1]))return 'Sayılar sırayla 5, 4, 3, 2, 1 olmalı; şu an: '+r.sayilar.join(', ');
+   var n=tr(r.cikti).split('başla').length-1;return n===1?null:'"Başla!" yalnız bir kez, sayılardan sonra yazılmalı; '+n+' kez yazıldı.';}},
+ {id:'t32',tur:'kod',ad:'Kumbara',
+  giris:'Almak istediğin kulaklık 500 TL. Her hafta harçlığından bir miktar para biriktiriyorsun ama her hafta aynı miktarı ayıramıyorsun. Her hafta ne kadar biriktirdiğini soran ve 500 TL\'ye ulaştığında kaç hafta sürdüğünü söyleyen bir program yaz. Kaç hafta süreceği baştan belli olmadığı için `while` gerekiyor.',
+  adimlar:['Biriken para için bir değişken ve hafta sayısı için bir değişken oluştur; ikisi de 0\'dan başlasın.',
+   'Biriken para 500\'den küçük olduğu sürece dönen bir döngü kur.',
+   'Her turda "Bu hafta kaç TL? " diye sor; cevabı sayıya çevirip biriken paraya ekle ve hafta sayısını 1 artır.',
+   'Döngü bitince hedefe kaç haftada ulaşıldığını yazdır.'],
+  ipucu:[['','biriken = 0\nhafta = 0'],
+   ['Para 500\'e ulaşınca koşul yanlış olur ve döngü kendiliğinden biter.','while biriken < 500:'],
+   ['Üç satır da döngünün içinde olmalı.','    para = int(input("Bu hafta kaç TL? "))\n    biriken = biriken + para\n    hafta = hafta + 1'],
+   ['Bu satır döngüden sonra, girintisiz yazılır.','print("Hedefe", hafta, "haftada ulaştın")']],
+  ornek:'Bu hafta kaç TL? 200\nBu hafta kaç TL? 200\nBu hafta kaç TL? 200\nHedefe 3 haftada ulaştın',
+  kontrol:async function(T){var ts=[[[200,200,200],3],[[100,100,100,100,100],5],[[500],1]];
+   for(var i=0;i<ts.length;i++){var r=await T(ts[i][0].map(String));if(r.hata)return 'Haftalık '+ts[i][0].join(', ')+' TL girildiğinde: '+r.hata;
+    if(r.kalan>0)return 'Haftalık '+ts[i][0].join(', ')+' TL girildiğinde program hedefe ulaşmadan durdu.';
+    if(!varMi(r,ts[i][1]))return 'Haftalık '+ts[i][0].join(', ')+' TL girildiğinde hafta sayısı '+ts[i][1]+' olmalı; çıktıda göremedim.';}
+   return null;}},
+ {id:'t33',tur:'kod',ad:'Kasa şifresi',
+  giris:'Bir kasanın şifresi 4821. Kasayı açmak isteyen kişinin 3 deneme hakkı var. Doğru şifreyi yazarsa kasa açılır. Üç denemede de bilemezse kasa kilitlenir. Bu kasanın programını yaz.',
+  adimlar:['Hak sayısı için bir değişken oluştur ve 3 ata.',
+   'Hak 0\'dan büyük olduğu sürece dönen bir döngü kur.',
+   'Her turda "Şifre: " diye sor.',
+   'Cevap "4821" ise "Açıldı" yazdır ve döngüden çık.',
+   'Değilse hakkı 1 azalt.',
+   'Döngüden sonra hak 0 ise "Kilitlendi" yazdır.'],
+  ipucu:[['','hak = 3'],
+   ['','while hak > 0:'],
+   ['Cevabı sayıya çevirmene gerek yok; metin olarak karşılaştıracağız.','    tahmin = input("Şifre: ")'],
+   ['`input` metin verdiği için şifreyi tırnak içinde yaz. `break` döngüden hemen çıkar.','    if tahmin == "4821":\n        print("Açıldı")\n        break'],
+   ['`else`, `if` ile aynı hizada olmalı.','    else:\n        hak = hak - 1'],
+   ['Doğru şifreyle çıkıldıysa hak 0 olmaz; hak 0 ise bütün denemeler yanlıştı. Bu satırlar girintisiz yazılır.','if hak == 0:\n    print("Kilitlendi")']],
+  ornek:'Şifre: 1111\nŞifre: 4821\nAçıldı',
+  kontrol:async function(T){var ts=[[['4821'],true],[['1111','2222','4821'],true],[['1111','2222','3333'],false]];
+   for(var i=0;i<ts.length;i++){var r=await T(ts[i][0]);var et='Denemeler '+ts[i][0].join(', ')+' iken: ';if(r.hata)return et+r.hata;
+    var a=tr(r.cikti).indexOf('açıldı')>=0,k=tr(r.cikti).indexOf('kilitlendi')>=0;
+    if(ts[i][1]&&!a)return et+'"Açıldı" yazmalıydı.';if(ts[i][1]&&k)return et+'"Kilitlendi" yazmamalıydı.';
+    if(!ts[i][1]&&!k)return et+'"Kilitlendi" yazmalıydı.';if(!ts[i][1]&&a)return et+'"Açıldı" yazmamalıydı.';
+    if(r.kalan>0)return et+'program bütün denemeleri sormadan bitti.';}
+   return null;}},
+ {id:'t34',tur:'kod',hata:true,ad:'Üç tur',
+  giris:'Bir koşucu antrenmanda pistin etrafında 3 tur atacak. Bu program her turu saymalı: ekrana "Tur 1", "Tur 2", "Tur 3" yazıp durmalı. Çalıştır, ne olduğuna bak ve düzelt.',
+  baslangic:'sayac = 1\nwhile sayac <= 3:\n    print("Tur", sayac)',
+  ipucu:[['Döngünün içinde `sayac` hiç değişmiyor; hep 1 kalıyor ve koşul hep doğru. Döngünün içine, `print` satırının altına şunu ekle:','    sayac = sayac + 1']],
+  kontrol:async function(T){var r=await T([]);if(r.hata)return r.hata;
+   return ayni(r.sayilar,[1,2,3])?null:'Çıktı Tur 1, Tur 2, Tur 3 olmalı.';}},
+ {id:'t35',tur:'kod',ek:true,ad:'Menü',
+  giris:'Bir oyunun açılış ekranında menü vardır ve oyuncu çıkmak isteyene kadar menü ekranda kalır. Benzer bir menü yaz: kullanıcı 1 yazarsa program selam verir, 2 yazarsa 1\'den 3\'e kadar sayar, q yazarsa veda edip kapanır. Kullanıcı q yazana kadar menü yeniden sorulur.',
+  adimlar:['Durmadan dönen bir döngü kur.',
+   'Her turda "Seçim (1, 2, q): " diye sor ve cevabı küçük harfe çevir.',
+   'Cevap "1" ise "Merhaba!" yazdır.',
+   'Cevap "2" ise 1\'den 3\'e kadar sayıları alt alta yazdır.',
+   'Cevap "q" ise "Görüşürüz" yazdır ve döngüden çık.',
+   'Başka bir şey yazıldıysa "Geçersiz seçim" yazdır.'],
+  ipucu:[['','while True:'],
+   ['`.lower()` büyük harfleri küçültür; kullanıcı Q yazsa da q olur.','    secim = input("Seçim (1, 2, q): ").lower()'],
+   ['','    if secim == "1":\n        print("Merhaba!")'],
+   ['Bir `elif` içinde `for` döngüsü kurabilirsin.','    elif secim == "2":\n        for i in range(1, 4):\n            print(i)'],
+   ['','    elif secim == "q":\n        print("Görüşürüz")\n        break'],
+   ['Hiçbiri değilse `else` çalışır.','    else:\n        print("Geçersiz seçim")']],
+  ornek:'Seçim (1, 2, q): 1\nMerhaba!\nSeçim (1, 2, q): x\nGeçersiz seçim\nSeçim (1, 2, q): Q\nGörüşürüz',
+  kontrol:async function(T){var r=await T(['1','x','2','Q']);if(r.hata)return r.hata;var c=tr(r.cikti);
+   if(c.indexOf('merhaba')<0)return '1 seçilince "Merhaba!" yazmalı.';if(c.indexOf('geçersiz')<0)return 'x yazılınca "Geçersiz seçim" yazmalı.';
+   if(!ayni(r.sayilar,[1,2,3]))return '2 seçilince 1, 2, 3 alt alta yazılmalı.';if(c.indexOf('görüşürüz')<0)return 'Q yazılınca "Görüşürüz" yazıp çıkmalı.';
+   var r2=await T(['q']);if(r2.hata)return r2.hata;if(tr(r2.cikti).indexOf('merhaba')>=0)return 'Yalnız q yazılınca "Merhaba!" yazmamalı.';return null;}}
+]},
+{id:'m4',ad:'Sözlük',
+ bilgi:{metin:['Sözlük, bilgileri çiftler hâlinde tutar: her anahtarın karşısında bir değer vardır. Süslü parantezle yazılır; anahtar ile değer arasına iki nokta konur.',
+  'Bir değere sıra numarasıyla değil, anahtarıyla ulaşılır: `sozluk[anahtar]`. Aynı yazım hem yeni çift ekler hem de var olan değeri değiştirir.',
+  '`for` ile dolaşırken her turda anahtar gelir; değeri almak için yine `sozluk[anahtar]` yazılır.'],
+  ornekler:['yaslar = {"Ali": 15, "Ece": 16}\nprint(yaslar["Ece"])\nyaslar["Can"] = 14\nyaslar["Ali"] = 16\nprint(len(yaslar))',
+   'yaslar = {"Ali": 15, "Ece": 16}\nfor isim in yaslar:\n    print(isim, yaslar[isim])']},
+ gorevler:[
+ {id:'t41',tur:'tahmin',ad:'Forma numaraları 1',soru:'Bir basketbol takımı oyuncularının forma numaralarını sözlükte tutuyor: oyuncunun adı anahtar, forma numarası değer. Bu kod ne yazar?',
+  kod:'formalar = {"Ali": 7, "Ece": 10, "Can": 4}\nprint(formalar["Ece"])',
+  secenekler:['Ece','1','10','7'],dogru:2,
+  aciklama:'Köşeli parantezin içine anahtar yazılır, karşısındaki değer gelir: Ece\'nin numarası 10.'},
+ {id:'t46',tur:'tahmin',ad:'Forma numaraları 2',soru:'Sözlük yazılırken "Ali" yanlışlıkla iki kez yazılmış. Bu kod ne yazar?',
+  kod:'formalar = {"Ali": 7, "Ece": 10, "Ali": 9}\nprint(len(formalar))',
+  secenekler:['3','2','1','Hata verir'],dogru:1,
+  aciklama:'Bir anahtar sözlükte yalnız bir kez bulunabilir. Sözlükte iki çift kalır: Ali ve Ece.'},
+ {id:'t47',tur:'tahmin',ad:'Forma numaraları 3',soru:'Aynı sözlük: "Ali" iki kez yazılmış. Bu kod ne yazar?',
+  kod:'formalar = {"Ali": 7, "Ece": 10, "Ali": 9}\nprint(formalar["Ali"])',
+  secenekler:['7','7 ve 9','Hata verir','9'],dogru:3,
+  aciklama:'Aynı anahtar ikinci kez yazılınca yeni değer eskisinin üzerine yazılır: Ali\'nin numarası 9 olur.'},
+ {id:'t40',tur:'kod',ad:'Takım kadrosu',
+  giris:'Bir voleybol takımının antrenörü oyuncuların forma numaralarını bir programda tutmak istiyor. Takımda şu an üç oyuncu var: Ali 7, Ece 10, Can 4 numarayı giyiyor. Antrenör bu bilgileri bir sözlükte saklayacak, sonra kadroda iki değişiklik yapacak.',
+  adimlar:['`formalar` adlı bir sözlük oluştur: "Ali" 7, "Ece" 10, "Can" 4.',
+   'Ece\'nin forma numarasını sözlükten alıp yazdır.',
+   'Takıma Su adında yeni bir oyuncu katıldı ve 11 numarayı aldı: onu sözlüğe ekle.',
+   'Ali numarasını değiştirdi, artık 9 giyiyor: Ali\'nin numarasını 9 yap.',
+   'Takımda kaç oyuncu olduğunu yazdır.'],
+  ipucu:[['Adlar metin olduğu için tırnak içinde, numaralar tırnaksız yazılır.','formalar = {"Ali": 7, "Ece": 10, "Can": 4}'],
+   ['Köşeli parantezin içine anahtarı yaz.','print(formalar["Ece"])'],
+   ['Sözlükte olmayan bir anahtara değer atarsan yeni çift eklenir.','formalar["Su"] = 11'],
+   ['Sözlükte olan bir anahtara değer atarsan eski değer değişir. Yazım eklemeyle aynı.','formalar["Ali"] = 9'],
+   ['`len` sözlükte kaç çift olduğunu söyler.','print(len(formalar))']],
+  ornek:'10\n4',
+  kontrol:async function(T){var r=await T([]);if(r.hata)return r.hata;var f=r.al('formalar');
+   if(!soz(f))return '`formalar` adlı bir sözlük bulamadım.';
+   if(f.Ece!==10||f.Can!==4)return '"Ece" 10, "Can" 4 olmalı.';if(f.Su!==11)return '"Su" 11 numarayla sözlükte olmalı.';
+   if(f.Ali!==9)return '"Ali" numarası 9 olmalı; şu an '+f.Ali+'.';if(Object.keys(f).length!==4)return 'Sözlükte 4 oyuncu olmalı; şu an '+Object.keys(f).length+'.';
+   if(!varMi(r,10))return 'Ece\'nin numarasının (10) yazdırıldığını göremedim.';
+   return varMi(r,4)?null:'Oyuncu sayısının (4) yazdırıldığını göremedim.';}},
+ {id:'t42',tur:'kod',ad:'Kantin stoğu',
+  giris:'Okul kantininin görevlisi rafta hangi üründen kaç tane kaldığını takip etmek istiyor. Şu an rafta 12 tost, 4 ayran ve 9 simit var. Gün içinde 2 tost satılıyor ve kantine 20 şişe su geliyor. Görevli gün sonunda her ürünün adedini görmek ve azalan ürünü fark etmek istiyor. Bu programı yaz.',
+  adimlar:['`stok` adlı bir sözlük oluştur: "tost" 12, "ayran" 4, "simit" 9.',
+   '2 tost satıldı: "tost" değerini 2 azalt.',
+   'Kantine 20 su geldi: sözlüğe "su" ürününü 20 adetle ekle.',
+   'Sözlüğü bir döngüyle dolaş; her ürünü adediyle birlikte yazdır.',
+   'Aynı döngüde, adedi 5\'ten az olan ürün için "azaldı" yazdır.'],
+  ipucu:[['','stok = {"tost": 12, "ayran": 4, "simit": 9}'],
+   ['Eski değeri alıp 2 eksiğini aynı anahtara geri yaz.','stok["tost"] = stok["tost"] - 2'],
+   ['','stok["su"] = 20'],
+   ['`for` her turda anahtarı (ürün adını) verir; adet için `stok[urun]` yaz.','for urun in stok:\n    print(urun, stok[urun])'],
+   ['`if` döngünün içinde, `print` ile aynı hizada olmalı.','    if stok[urun] < 5:\n        print("azaldı")']],
+  ornek:'tost 10\nayran 4\nazaldı\nsimit 9\nsu 20',
+  kontrol:async function(T){var r=await T([]);if(r.hata)return r.hata;var s=r.al('stok');
+   if(!soz(s))return '`stok` adlı bir sözlük bulamadım.';
+   if(s.tost!==10)return '"tost" 10 olmalı; şu an '+s.tost+'.';if(s.su!==20)return '"su" 20 adetle sözlükte olmalı.';
+   if(s.ayran!==4||s.simit!==9||Object.keys(s).length!==4)return 'Sözlükte tost, ayran, simit ve su olmalı; ayran 4, simit 9 kalmalı.';
+   var c=tr(r.cikti);for(var k in s){if(c.indexOf(k)<0)return '"'+k+'" ürününün yazdırıldığını göremedim.';}
+   var n=c.split('azaldı').length-1;if(n!==1)return '"azaldı" yalnız adedi 5\'ten az olan ürün için, yani bir kez yazılmalı; '+n+' kez yazıldı.';return null;}},
+ {id:'t43',tur:'kod',ad:'Film kartları',gorsel:'kart',gdeg:'filmler',
+  giris:'Arkadaşlarınla izlediğiniz filmlere 10 üzerinden puan veriyorsunuz ve bunları bir film uygulamasında göstermek istiyorsun. Şimdiye kadar üç film puanlandı: Up 8, Coco 9, Cars 6. Filmleri ve puanlarını bir sözlükte tut. Kodunu çalıştırınca sözlükteki her film yanda bir kart olarak görünür.',
+  adimlar:['`filmler` adlı bir sözlük oluştur: "Up" 8, "Coco" 9, "Cars" 6.',
+   'Cars filmini yeniden izlediniz ve puanını yükselttiniz: "Cars" puanını 7 yap.',
+   'Kendi seçtiğin bir filmi puanıyla birlikte sözlüğe ekle.',
+   'Sözlüğü bir döngüyle dolaş; her filmi puanıyla birlikte yazdır.'],
+  ipucu:[['','filmler = {"Up": 8, "Coco": 9, "Cars": 6}'],
+   ['Var olan anahtara yeni değer ata.','filmler["Cars"] = 7'],
+   ['Olmayan bir anahtara değer atarsan yeni çift eklenir. Film adını sen seç.','filmler["Soul"] = 9'],
+   ['`for` her turda film adını verir; puan için `filmler[film]` yaz.','for film in filmler:\n    print(film, filmler[film])']],
+  kontrol:async function(T){var r=await T([]);if(r.hata)return r.hata;var f=r.al('filmler');
+   if(!soz(f))return '`filmler` adlı bir sözlük bulamadım.';
+   if(f.Up!==8||f.Coco!==9)return '"Up" 8, "Coco" 9 olmalı.';if(f.Cars!==7)return '"Cars" puanı 7 olmalı; şu an '+f.Cars+'.';
+   if(Object.keys(f).length<4)return 'Kendi seçtiğin bir film daha eklenmeli.';
+   for(var k in f){if(r.cikti.indexOf(k)<0)return '"'+k+'" filminin yazdırıldığını göremedim.';}return null;}},
+ {id:'t44',tur:'kod',hata:true,ad:'Kaç tost kaldı?',
+  giris:'Kantin görevlisi rafta kaç tost kaldığını öğrenmek istiyor. Ürünler ve adetleri bir sözlükte duruyor. Bu program tost sayısını (12) yazdırmalı ama hata veriyor. Çalıştır, hata mesajını oku ve düzelt.',
+  baslangic:'stok = {"tost": 12, "ayran": 20}\nprint(stok["Tost"])',
+  ipucu:[['Anahtar birebir aynı yazılmalı; büyük ve küçük harf farklı sayılır. Sözlükte "tost" var, "Tost" yok.','print(stok["tost"])']],
+  kontrol:async function(T){var r=await T([]);if(r.hata)return r.hata;return ayni(r.sayilar,[12])?null:'Çıktı 12 olmalı.';}},
+ {id:'t45',tur:'kod',ek:true,ad:'Karne ortalaması',
+  giris:'Dönem sonu geldi ve üç dersten notların belli oldu: Matematik 80, Fizik 70, Kimya 90. Karnende görünecek ortalamayı merak ediyorsun. Notları bir sözlükte tutan ve ortalamayı hesaplayan bir program yaz. Yeni bir ders eklendiğinde programın değişmeden çalışması için ortalamayı sözlüğü dolaşarak hesapla.',
+  adimlar:['`notlar` adlı sözlüğü bu üç dersle oluştur.',
+   'Toplam için bir değişken oluştur ve 0 ata.',
+   'Sözlüğü bir döngüyle dolaş; her dersin notunu toplama ekle.',
+   'Toplamı sözlükteki ders sayısına bölüp ortalamayı yazdır.'],
+  ipucu:[['','notlar = {"Matematik": 80, "Fizik": 70, "Kimya": 90}'],
+   ['','toplam = 0'],
+   ['`for` ders adını verir; notu almak için `notlar[ders]` yaz.','for ders in notlar:\n    toplam = toplam + notlar[ders]'],
+   ['Ders sayısını `len(notlar)` verir. Bu satır döngüden sonra yazılır.','print("Ortalama:", toplam / len(notlar))']],
+  ornek:'Ortalama: 80.0',
+  kontrol:async function(T,src){var r=await T([]);if(r.hata)return r.hata;if(!/\bfor\b/.test(src))return 'Sözlüğü bir döngüyle dolaşmalısın.';
+   var n=r.al('notlar');if(!soz(n)||n.Matematik!==80||n.Fizik!==70||n.Kimya!==90)return '`notlar` sözlüğünde Matematik 80, Fizik 70, Kimya 90 olmalı.';
+   return varMi(r,80)?null:'Çıktıda ortalamayı (80) göremedim.';}}
+]},
+{id:'m5',ad:'Birleşik',
+ bilgi:{metin:['Gerçek programlarda döngü, liste ve sözlük birlikte kullanılır. Bu modüldeki görevlerde hepsi bir arada.',
+  'Sık kullanılan bir kalıp: kullanıcı "bitti" yazana kadar bilgi al, hepsini bir listede topla, sonra listeyi dolaşıp sonucu hesapla.'],
+  ornekler:['isimler = ["Ali", "Ece"]\nyaslar = {"Ali": 15, "Ece": 16}\nfor isim in isimler:\n    print(isim, yaslar[isim])']},
+ gorevler:[
+ {id:'t51',tur:'kod',ad:'Harcama takibi',
+  giris:'Harçlığın nereye gidiyor diye merak ediyorsun ve bir gün boyunca yaptığın her harcamayı not etmeye karar verdin. Kaç harcama yapacağın baştan belli değil. Program, sen "bitti" yazana kadar harcamalarını tek tek sorsun; sonra o gün toplam ne kadar harcadığını ve 100 TL\'den büyük kaç harcama yaptığını söylesin.',
+  adimlar:['`harcamalar` adlı boş bir liste oluştur.',
+   'Durmadan dönen bir döngü kur; her turda "Harcama (bitirmek için bitti): " diye sor.',
+   'Cevabın küçük harfli hâli "bitti" ise döngüden çık.',
+   'Değilse cevabı sayıya çevirip listenin sonuna ekle.',
+   'Döngüden sonra toplam harcamayı yazdır.',
+   'Listeyi bir döngüyle dolaşıp 100\'den büyük harcamaları say; bu sayıyı yazdır.'],
+  ipucu:[['','harcamalar = []'],
+   ['Cevabı hemen sayıya çevirme; önce "bitti" olup olmadığına bakacağız.','while True:\n    cevap = input("Harcama (bitirmek için bitti): ")'],
+   ['Bu kontrol sayıya çevirmeden önce yapılmalı; "bitti" sayıya çevrilemez.','    if cevap.lower() == "bitti":\n        break'],
+   ['Bu satıra yalnız cevap "bitti" değilse gelinir.','    harcamalar.append(int(cevap))'],
+   ['Bu satır döngüden sonra, girintisiz yazılır.','print("Toplam:", sum(harcamalar))'],
+   ['Bir sayaç tut; 100\'den büyük her harcamada 1 artır.','buyuk = 0\nfor harcama in harcamalar:\n    if harcama > 100:\n        buyuk = buyuk + 1\nprint("100\'den büyük harcama sayısı:", buyuk)']],
+  ornek:'Harcama (bitirmek için bitti): 50\nHarcama (bitirmek için bitti): 150\nHarcama (bitirmek için bitti): 200\nHarcama (bitirmek için bitti): bitti\nToplam: 400\n100\'den büyük harcama sayısı: 2',
+  kontrol:async function(T){var ts=[[['50','150','200','bitti'],[50,150,200],400,2],[['120','30','Bitti'],[120,30],150,1]];
+   for(var i=0;i<ts.length;i++){var r=await T(ts[i][0]);var et='Girdiler '+ts[i][0].join(', ')+' iken: ';if(r.hata)return et+r.hata;
+    if(!ayni(r.al('harcamalar'),ts[i][1]))return et+'`harcamalar` listesi '+ts[i][1].join(', ')+' olmalı.';
+    if(!varMi(r,ts[i][2]))return et+'toplam '+ts[i][2]+' olmalı; çıktıda göremedim.';
+    if(!varMi(r,ts[i][3]))return et+'100\'den büyük harcama sayısı '+ts[i][3]+' olmalı; çıktıda göremedim.';}
+   return null;}},
+ {id:'t52',tur:'kod',ad:'Sınıf anketi',
+  giris:'Sınıfta "En sevdiğin oyun türü hangisi?" diye bir anket yapılıyor. Üç seçenek var: Aksiyon, Spor, Bulmaca. Öğrenciler sırayla bilgisayarın başına gelip oyunu kullanıyor. Kaç öğrencinin oy vereceği baştan belli değil; oylama bitince öğretmen q yazıyor. Program her türün kaç oy aldığını saymalı ve sonunda sonuçları göstermeli.',
+  adimlar:['`oylar` adlı bir sözlük oluştur: "Aksiyon" 0, "Spor" 0, "Bulmaca" 0.',
+   'Durmadan dönen bir döngü kur; her turda "Sıradaki oyu girin (Aksiyon için 1, Spor için 2, Bulmaca için 3, bitirmek için q): " diye sor.',
+   'Cevap "q" ise döngüden çık.',
+   'Cevap "1" ise "Aksiyon" değerini, "2" ise "Spor" değerini, "3" ise "Bulmaca" değerini 1 artır.',
+   'Döngüden sonra sözlüğü dolaşıp her türü oy sayısıyla birlikte yazdır.'],
+  ipucu:[['Her türün oyu 0\'dan başlar.','oylar = {"Aksiyon": 0, "Spor": 0, "Bulmaca": 0}'],
+   ['','while True:\n    oy = input("Sıradaki oyu girin (Aksiyon için 1, Spor için 2, Bulmaca için 3, bitirmek için q): ")'],
+   ['','    if oy == "q":\n        break'],
+   ['`input` metin verdiği için "1" tırnak içinde yazılır. Sözlükteki sayıyı artırmak için eski değerin 1 fazlasını geri yaz.','    elif oy == "1":\n        oylar["Aksiyon"] = oylar["Aksiyon"] + 1\n    elif oy == "2":\n        oylar["Spor"] = oylar["Spor"] + 1\n    elif oy == "3":\n        oylar["Bulmaca"] = oylar["Bulmaca"] + 1'],
+   ['Bu satırlar döngüden sonra, girintisiz başlar.','for tur in oylar:\n    print(tur, oylar[tur])']],
+  ornek:'Sıradaki oyu girin (Aksiyon için 1, ...): 3\nSıradaki oyu girin (Aksiyon için 1, ...): 1\nSıradaki oyu girin (Aksiyon için 1, ...): 3\nSıradaki oyu girin (Aksiyon için 1, ...): q\nAksiyon 1\nSpor 0\nBulmaca 2',
+  kontrol:async function(T){var r=await T(['1','3','3','2','3','q']);if(r.hata)return r.hata;var o=r.al('oylar');
+   if(!soz(o))return '`oylar` adlı bir sözlük bulamadım.';
+   if(o.Aksiyon!==1||o.Spor!==1||o.Bulmaca!==3)return 'Oylar 1, 3, 3, 2, 3 iken Aksiyon 1, Spor 1, Bulmaca 3 olmalı; şu an '+JSON.stringify(o)+'.';
+   var eks=['Aksiyon','Spor','Bulmaca'].filter(function(k){return r.cikti.indexOf(k)<0;});
+   return eks.length?'"'+eks[0]+'" türünün yazdırıldığını göremedim.':null;}},
+ {id:'t53',tur:'kod',hata:true,ad:'Toplama makinesi',
+  giris:'Bu program basit bir hesap makinesi: kullanıcıdan iki sayı alıp toplamını yazmalı. Örneğin 3 ve 4 girilince 7 yazmalı. Ama 3 ve 4 girince başka bir şey yazıyor. Çalıştır, ne yazdığına bak, sorunu bul ve düzelt.',
+  baslangic:'a = input("Birinci sayı: ")\nb = input("İkinci sayı: ")\nprint("Toplam:", a + b)',
+  ipucu:[['`input` her zaman metin verir. İki metin toplanınca yan yana yapışır: "3" + "4" = "34". Toplamadan önce ikisini de `int` ile sayıya çevir.','a = int(input("Birinci sayı: "))\nb = int(input("İkinci sayı: "))']],
+  kontrol:async function(T){var ts=[[3,4,7],[10,5,15]];for(var i=0;i<2;i++){var r=await T([String(ts[i][0]),String(ts[i][1])]);if(r.hata)return r.hata;
+    if(!varMi(r,ts[i][2]))return ts[i][0]+' ve '+ts[i][1]+' girildiğinde '+ts[i][2]+' yazmalı; şu an: '+r.cikti.trim();}return null;}},
+ {id:'t54',tur:'kod',ek:true,ad:'Kantin kasası',
+  giris:'Okul kantininde üç ürün satılıyor: simit 15 TL, ayran 20 TL, tost 60 TL. Kasadaki görevli, bir müşterinin aldığı ürünlerin adlarını tek tek yazıyor; müşterinin alışverişi bitince "bitti" yazıyor. Program müşterinin ödeyeceği toplam tutarı hesaplamalı. Örnek: müşteri tost, ayran ve bir tost daha alırsa ödeyeceği tutar 60 + 20 + 60 = 140 TL olur. Fiyatları bir sözlükte, müşterinin aldıklarını bir listede tut.',
+  adimlar:['`fiyatlar` adlı bir sözlük oluştur: "simit" 15, "ayran" 20, "tost" 60.',
+   '`sepet` adlı boş bir liste oluştur; müşterinin aldığı ürünler burada birikecek.',
+   'Durmadan dönen bir döngü kur; her turda "Ürün (bitirmek için bitti): " diye sor. Cevap "bitti" ise döngüden çık, değilse cevabı sepete ekle.',
+   'Toplam için bir değişken oluştur. Sepeti bir döngüyle dolaş; her ürünün fiyatını sözlükten alıp toplama ekle.',
+   'Toplam tutarı yazdır.'],
+  ipucu:[['','fiyatlar = {"simit": 15, "ayran": 20, "tost": 60}'],
+   ['','sepet = []'],
+   ['Ürün adları metin olarak kalır; sayıya çevirme.','while True:\n    urun = input("Ürün (bitirmek için bitti): ")\n    if urun == "bitti":\n        break\n    sepet.append(urun)'],
+   ['Sepetteki her ürün adı, fiyatlar sözlüğünde bir anahtardır: `fiyatlar[urun]` o ürünün fiyatını verir.','toplam = 0\nfor urun in sepet:\n    toplam = toplam + fiyatlar[urun]'],
+   ['','print("Toplam:", toplam)']],
+  ornek:'Ürün (bitirmek için bitti): tost\nÜrün (bitirmek için bitti): ayran\nÜrün (bitirmek için bitti): tost\nÜrün (bitirmek için bitti): bitti\nToplam: 140',
+  kontrol:async function(T){var ts=[[['tost','ayran','tost','bitti'],140],[['simit','bitti'],15]];
+   for(var i=0;i<2;i++){var r=await T(ts[i][0]);var et='Girdiler '+ts[i][0].join(', ')+' iken: ';if(r.hata)return et+r.hata;
+    if(!ayni(r.al('sepet'),ts[i][0].slice(0,-1)))return et+'`sepet` listesinde yazılan ürünler sırayla olmalı.';
+    if(!varMi(r,ts[i][1]))return et+'toplam '+ts[i][1]+' olmalı; çıktıda göremedim.';}return null;}}
+]}
+];
+
+var BILGI_CIKTI={"m1": ["Tur 1\nTur 2\nTur 3\nBitti", "6"], "m2": ["elma\n3\n['elma', 'muz', 'kivi', 'çilek']", "elma\nmuz\nkivi"], "m3": ["Tur 1\nTur 2\nTur 3\nBitti", "Tur 1\nTur 2\nBitti"], "m4": ["16\n3", "Ali 15\nEce 16"], "m5": ["Ali 15\nEce 16"]};
+var COZ={"t12": "c2F5aSA9IGludChpbnB1dCgiSGFuZ2kgc2F5xLE/ICIpKQpmb3IgaSBpbiByYW5nZSgxLCAxMSk6CiAgICBwcmludChzYXlpLCAieCIsIGksICI9Iiwgc2F5aSAqIGkp", "t13": "Zm9yIGkgaW4gcmFuZ2UoMTApOgogICAgYm95YShpLCBpKQ==", "t14": "Zm9yIGkgaW4gcmFuZ2UoMSwgMTEpOgogICAgcHJpbnQoaSk=", "t15": "dG9wbGFtID0gMAp0dXRhbl9ndW4gPSAwCmZvciBpIGluIHJhbmdlKDcpOgogICAgYWRpbSA9IGludChpbnB1dCgiQnVnw7xuIGthw6cgYWTEsW0gYXR0xLFuPyAiKSkKICAgIHRvcGxhbSA9IHRvcGxhbSArIGFkaW0KICAgIGlmIGFkaW0gPj0gMTAwMDA6CiAgICAgICAgdHV0YW5fZ3VuID0gdHV0YW5fZ3VuICsgMQpwcmludCgiVG9wbGFtIGFkxLFtOiIsIHRvcGxhbSkKcHJpbnQoIkhlZGVmaW4gdHV0dHXEn3UgZ8O8bjoiLCB0dXRhbl9ndW4p", "t22": "c2Fya2lsYXIgPSBbXQpmb3IgaSBpbiByYW5nZSgzKToKICAgIHNhcmtpID0gaW5wdXQoIsWeYXJrxLEgYWTEsTogIikKICAgIHNhcmtpbGFyLmFwcGVuZChzYXJraSkKc2F5YWMgPSAxCmZvciBzYXJraSBpbiBzYXJraWxhcjoKICAgIHByaW50KHNheWFjLCAiLiIsIHNhcmtpKQogICAgc2F5YWMgPSBzYXlhYyArIDE=", "t23": "c3VyZWxlciA9IFszLCA1LCAyLCA2LCA0XQpjdW1hcnRlc2kgPSBpbnQoaW5wdXQoIkN1bWFydGVzaSBrYcOnIHNhYXQ/ICIpKQpzdXJlbGVyLmFwcGVuZChjdW1hcnRlc2kpCnByaW50KCJUb3BsYW06Iiwgc3VtKHN1cmVsZXIpKQ==", "t24": "Z29sbGVyID0gWzIsIDAsIDNdCmdvbGxlci5hcHBlbmQoMSkKcHJpbnQobGVuKGdvbGxlcikp", "t25": "c2tvcmxhciA9IFsxMjAsIDM0MCwgOTAsIDQxMCwgMjc1XQplbl95dWtzZWsgPSBza29ybGFyWzBdCmZvciBza29yIGluIHNrb3JsYXI6CiAgICBpZiBza29yID4gZW5feXVrc2VrOgogICAgICAgIGVuX3l1a3NlayA9IHNrb3IKcHJpbnQoIkVuIHnDvGtzZWsgc2tvcjoiLCBlbl95dWtzZWsp", "t30": "c2F5YWMgPSA1CndoaWxlIHNheWFjID4gMDoKICAgIHByaW50KHNheWFjKQogICAgc2F5YWMgPSBzYXlhYyAtIDEKcHJpbnQoIkJhxZ9sYSEiKQ==", "t32": "YmlyaWtlbiA9IDAKaGFmdGEgPSAwCndoaWxlIGJpcmlrZW4gPCA1MDA6CiAgICBwYXJhID0gaW50KGlucHV0KCJCdSBoYWZ0YSBrYcOnIFRMPyAiKSkKICAgIGJpcmlrZW4gPSBiaXJpa2VuICsgcGFyYQogICAgaGFmdGEgPSBoYWZ0YSArIDEKcHJpbnQoIkhlZGVmZSIsIGhhZnRhLCAiaGFmdGFkYSB1bGHFn3TEsW4iKQ==", "t33": "aGFrID0gMwp3aGlsZSBoYWsgPiAwOgogICAgdGFobWluID0gaW5wdXQoIsWeaWZyZTogIikKICAgIGlmIHRhaG1pbiA9PSAiNDgyMSI6CiAgICAgICAgcHJpbnQoIkHDp8SxbGTEsSIpCiAgICAgICAgYnJlYWsKICAgIGVsc2U6CiAgICAgICAgaGFrID0gaGFrIC0gMQppZiBoYWsgPT0gMDoKICAgIHByaW50KCJLaWxpdGxlbmRpIik=", "t34": "c2F5YWMgPSAxCndoaWxlIHNheWFjIDw9IDM6CiAgICBwcmludCgiVHVyIiwgc2F5YWMpCiAgICBzYXlhYyA9IHNheWFjICsgMQ==", "t35": "d2hpbGUgVHJ1ZToKICAgIHNlY2ltID0gaW5wdXQoIlNlw6dpbSAoMSwgMiwgcSk6ICIpLmxvd2VyKCkKICAgIGlmIHNlY2ltID09ICIxIjoKICAgICAgICBwcmludCgiTWVyaGFiYSEiKQogICAgZWxpZiBzZWNpbSA9PSAiMiI6CiAgICAgICAgZm9yIGkgaW4gcmFuZ2UoMSwgNCk6CiAgICAgICAgICAgIHByaW50KGkpCiAgICBlbGlmIHNlY2ltID09ICJxIjoKICAgICAgICBwcmludCgiR8O2csO8xZ/DvHLDvHoiKQogICAgICAgIGJyZWFrCiAgICBlbHNlOgogICAgICAgIHByaW50KCJHZcOnZXJzaXogc2XDp2ltIik=", "t40": "Zm9ybWFsYXIgPSB7IkFsaSI6IDcsICJFY2UiOiAxMCwgIkNhbiI6IDR9CnByaW50KGZvcm1hbGFyWyJFY2UiXSkKZm9ybWFsYXJbIlN1Il0gPSAxMQpmb3JtYWxhclsiQWxpIl0gPSA5CnByaW50KGxlbihmb3JtYWxhcikp", "t42": "c3RvayA9IHsidG9zdCI6IDEyLCAiYXlyYW4iOiA0LCAic2ltaXQiOiA5fQpzdG9rWyJ0b3N0Il0gPSBzdG9rWyJ0b3N0Il0gLSAyCnN0b2tbInN1Il0gPSAyMApmb3IgdXJ1biBpbiBzdG9rOgogICAgcHJpbnQodXJ1biwgc3Rva1t1cnVuXSkKICAgIGlmIHN0b2tbdXJ1bl0gPCA1OgogICAgICAgIHByaW50KCJhemFsZMSxIik=", "t43": "ZmlsbWxlciA9IHsiVXAiOiA4LCAiQ29jbyI6IDksICJDYXJzIjogNn0KZmlsbWxlclsiQ2FycyJdID0gNwpmaWxtbGVyWyJTb3VsIl0gPSA5CmZvciBmaWxtIGluIGZpbG1sZXI6CiAgICBwcmludChmaWxtLCBmaWxtbGVyW2ZpbG1dKQ==", "t44": "c3RvayA9IHsidG9zdCI6IDEyLCAiYXlyYW4iOiAyMH0KcHJpbnQoc3Rva1sidG9zdCJdKQ==", "t45": "bm90bGFyID0geyJNYXRlbWF0aWsiOiA4MCwgIkZpemlrIjogNzAsICJLaW15YSI6IDkwfQp0b3BsYW0gPSAwCmZvciBkZXJzIGluIG5vdGxhcjoKICAgIHRvcGxhbSA9IHRvcGxhbSArIG5vdGxhcltkZXJzXQpwcmludCgiT3J0YWxhbWE6IiwgdG9wbGFtIC8gbGVuKG5vdGxhcikp", "t51": "aGFyY2FtYWxhciA9IFtdCndoaWxlIFRydWU6CiAgICBjZXZhcCA9IGlucHV0KCJIYXJjYW1hIChiaXRpcm1layBpw6dpbiBiaXR0aSk6ICIpCiAgICBpZiBjZXZhcC5sb3dlcigpID09ICJiaXR0aSI6CiAgICAgICAgYnJlYWsKICAgIGhhcmNhbWFsYXIuYXBwZW5kKGludChjZXZhcCkpCnByaW50KCJUb3BsYW06Iiwgc3VtKGhhcmNhbWFsYXIpKQpidXl1ayA9IDAKZm9yIGhhcmNhbWEgaW4gaGFyY2FtYWxhcjoKICAgIGlmIGhhcmNhbWEgPiAxMDA6CiAgICAgICAgYnV5dWsgPSBidXl1ayArIDEKcHJpbnQoIjEwMCdkZW4gYsO8ecO8ayBoYXJjYW1hIHNhecSxc8SxOiIsIGJ1eXVrKQ==", "t52": "b3lsYXIgPSB7IkFrc2l5b24iOiAwLCAiU3BvciI6IDAsICJCdWxtYWNhIjogMH0Kd2hpbGUgVHJ1ZToKICAgIG95ID0gaW5wdXQoIlPEsXJhZGFraSBveXUgZ2lyaW4gKEFrc2l5b24gacOnaW4gMSwgU3BvciBpw6dpbiAyLCBCdWxtYWNhIGnDp2luIDMsIGJpdGlybWVrIGnDp2luIHEpOiAiKQogICAgaWYgb3kgPT0gInEiOgogICAgICAgIGJyZWFrCiAgICBlbGlmIG95ID09ICIxIjoKICAgICAgICBveWxhclsiQWtzaXlvbiJdID0gb3lsYXJbIkFrc2l5b24iXSArIDEKICAgIGVsaWYgb3kgPT0gIjIiOgogICAgICAgIG95bGFyWyJTcG9yIl0gPSBveWxhclsiU3BvciJdICsgMQogICAgZWxpZiBveSA9PSAiMyI6CiAgICAgICAgb3lsYXJbIkJ1bG1hY2EiXSA9IG95bGFyWyJCdWxtYWNhIl0gKyAxCmZvciB0dXIgaW4gb3lsYXI6CiAgICBwcmludCh0dXIsIG95bGFyW3R1cl0p", "t53": "YSA9IGludChpbnB1dCgiQmlyaW5jaSBzYXnEsTogIikpCmIgPSBpbnQoaW5wdXQoIsSwa2luY2kgc2F5xLE6ICIpKQpwcmludCgiVG9wbGFtOiIsIGEgKyBiKQ==", "t54": "Zml5YXRsYXIgPSB7InNpbWl0IjogMTUsICJheXJhbiI6IDIwLCAidG9zdCI6IDYwfQpzZXBldCA9IFtdCndoaWxlIFRydWU6CiAgICB1cnVuID0gaW5wdXQoIsOccsO8biAoYml0aXJtZWsgacOnaW4gYml0dGkpOiAiKQogICAgaWYgdXJ1biA9PSAiYml0dGkiOgogICAgICAgIGJyZWFrCiAgICBzZXBldC5hcHBlbmQodXJ1bikKdG9wbGFtID0gMApmb3IgdXJ1biBpbiBzZXBldDoKICAgIHRvcGxhbSA9IHRvcGxhbSArIGZpeWF0bGFyW3VydW5dCnByaW50KCJUb3BsYW06IiwgdG9wbGFtKQ=="};
+function coz(id){return new TextDecoder().decode(Uint8Array.from(atob(COZ[id]),function(c){return c.charCodeAt(0);}));}
+
+/* ------------------------------------------------------------------ durum */
+var ANAHTAR='kod-kasasi-v3',durum={tamam:{},kod:{},sekme:'m1',acik:false};
+try{var k=JSON.parse(localStorage.getItem(ANAHTAR)||'null');if(k&&k.tamam)durum=k;}catch(e){}
+['deneme','ipAcik','ipKod'].forEach(function(a){if(!durum[a])durum[a]={};});
+function kaydet(){try{localStorage.setItem(ANAHTAR,JSON.stringify(durum));}catch(e){}}
+function gerekli(m){return m.gorevler.filter(function(g){return !g.ek;});}
+function modulTamam(m){return gerekli(m).every(function(g){return durum.tamam[g.id];});}
+
+/* ------------------------------------------------------------------ Python */
+var py=null,pyDurum='yukleniyor',mesgul=false,hedef=null,kutuVar=typeof WebAssembly!=='undefined'&&typeof WebAssembly.Suspending==='function';
+var KURULUM=[
+'import builtins, sys, json, js',
+'from pyodide.ffi import run_sync',
+'class DonguDurmuyor(Exception): pass',
+'class GirdiBitti(Exception): pass',
+'_d = {"n": 0, "mod": "kutu", "kuyruk": [], "ad": {}}',
+'def _iz(cerceve, olay, arg):',
+'    _d["n"] += 1',
+'    if _d["n"] > 150000:',
+'        raise DonguDurmuyor("Program çok uzun sürdü: döngü durmuyor olabilir.")',
+'    return _iz',
+'def _input(soru=""):',
+'    soru = str(soru)',
+'    if _d["mod"] == "test":',
+'        if not _d["kuyruk"]:',
+'            raise GirdiBitti("Program beklenenden fazla soru sordu: döngü durması gereken yerde durmuyor olabilir.")',
+'        return _d["kuyruk"].pop(0)',
+'    js.kkYaz(soru)',
+'    if _d["mod"] == "kutu":',
+'        return str(run_sync(js.kkGirdi()))',
+'    c = str(js.kkPencere(soru))',
+'    js.kkYaz(c + "\\n", True)',
+'    return c',
+'def boya(sutun, satir):',
+'    sutun, satir = int(sutun), int(satir)',
+'    if sutun < 0 or sutun > 9 or satir < 0 or satir > 9:',
+'        raise ValueError("boya: sütun ve satır 0 ile 9 arasında olmalı")',
+'    js.kkBoya(sutun, satir)',
+'builtins.input = _input',
+'builtins.boya = boya',
+'def _calistir(kaynak, mod, girdiler):',
+'    _d["n"] = 0; _d["mod"] = mod; _d["kuyruk"] = json.loads(girdiler)',
+'    ad = {"__name__": "__main__"}',
+'    _d["ad"] = ad',
+'    kod = compile(kaynak, "<kod>", "exec")',
+'    sys.settrace(_iz)',
+'    try:',
+'        exec(kod, ad)',
+'    finally:',
+'        sys.settrace(None)',
+'def _al(isim):',
+'    try:',
+'        return json.dumps(_d["ad"].get(isim), ensure_ascii=False)',
+'    except Exception:',
+'        return "null"',
+'def _kalan():',
+'    return len(_d["kuyruk"])'
+].join('\n');
+
+window.kkYaz=function(m,gir){if(hedef)hedef.yaz(String(m),gir?'gir':null);};
+window.kkBoya=function(s,t){if(hedef)hedef.boya(s,t);};
+window.kkPencere=function(soru){var c=window.prompt(soru||'');return c===null?'':c;};
+window.kkGirdi=function(){return new Promise(function(coz){
+ var kutu=hedef&&hedef.kutu;if(!kutu){coz('');return;}
+ var g=document.createElement('input');g.type='text';g.autocomplete='off';kutu.appendChild(g);g.focus();
+ g.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();var c=g.value;var s=document.createElement('span');
+  s.className='gir';s.textContent=c+'\n';g.replaceWith(s);coz(c);}});});};
+
+function hataMetni(e){
+ var m=String(e&&e.message||e).trim().split('\n'),son=m[m.length-1]||'',satir=null;
+ for(var i=m.length-1;i>=0;i--){var x=/File "<kod>", line (\d+)/.exec(m[i]);if(x){satir=x[1];break;}}
+ son=son.replace(/^(DonguDurmuyor|GirdiBitti): /,'');
+ if(/run_sync|stack switching|JSPI/i.test(son)){kutuVar=false;son='Bu tarayıcıda sayfa içi kutu çalışmadı; yeniden çalıştır, sorular açılır pencereyle gelecek.';}
+ return (satir&&!/^Program /.test(son)?'Satır '+satir+': ':'')+son;
+}
+async function pyCalistir(src,mod,girdiler,alici){
+ hedef=alici;var hata=null;
+ py.globals.set('_k',src);py.globals.set('_m',mod);py.globals.set('_g',JSON.stringify(girdiler||[]));
+ try{await py.runPythonAsync('_calistir(_k, _m, _g)');}catch(e){hata=hataMetni(e);}
+ hedef=null;return hata;
+}
+function al(isim){try{return JSON.parse(py.runPython('_al('+JSON.stringify(isim)+')'));}catch(e){return null;}}
+
+async function testCalistir(src,girdiler){
+ var buf='',boyali={};
+ var hata=await pyCalistir(src,'test',girdiler,{yaz:function(m){if(buf.length<60000)buf+=m;},boya:function(s,t){boyali[s+','+t]=1;},kutu:null});
+ var kalan=0;try{kalan=py.runPython('_kalan()');}catch(e){}
+ return {cikti:buf,hata:hata,sayilar:sayilar(buf),satirlar:buf.split('\n').filter(function(l){return l.trim();}),boyali:Object.keys(boyali),al:al,kalan:kalan};
+}
+
+/* ------------------------------------------------------------------ arayüz */
+var ana=document.getElementById('ana'),nav=document.getElementById('nav');
+function parcalariCiz(){
+ var p=document.getElementById('parcalar');p.innerHTML='<span class="et">Şifre parçaları</span>';
+ MODULLER.forEach(function(m,i){var d=el('div','parca'+(modulTamam(m)?' var':''));d.textContent=modulTamam(m)?parca(i):(i+1);d.title=m.ad;p.appendChild(d);});
+}
+function navCiz(){
+ nav.innerHTML='';
+ MODULLER.forEach(function(m,i){var g=gerekli(m),n=g.filter(function(x){return durum.tamam[x.id];}).length;
+  var b=el('button',(durum.sekme===m.id?'sec ':'')+(n===g.length?'bitti':''),(i+1)+'. '+esc(m.ad)+'<span class="say">'+n+'/'+g.length+'</span>');
+  b.onclick=function(){durum.sekme=m.id;kaydet();ciz();window.scrollTo(0,0);};nav.appendChild(b);});
+ var b=el('button',durum.sekme==='kasa'?'sec':'','Kasa');b.onclick=function(){durum.sekme='kasa';kaydet();ciz();window.scrollTo(0,0);};nav.appendChild(b);
+}
+function izgaraCiz(kap,boyali){
+ kap.innerHTML='';var z=el('div','izgara');z.appendChild(el('div','no',''));
+ for(var s=0;s<10;s++)z.appendChild(el('div','no',String(s)));
+ for(var t=0;t<10;t++){z.appendChild(el('div','no',String(t)));for(var s2=0;s2<10;s2++)z.appendChild(el('div',boyali[s2+','+t]?'dolu':'',''));}
+ kap.appendChild(z);kap.appendChild(el('p','kucuk','Üstteki sayılar sütun, soldaki sayılar satır.'));
+}
+function cubukCiz(kap,liste,etiketler){
+ kap.innerHTML='';if(!Array.isArray(liste)||!liste.length||liste.some(function(x){return typeof x!=='number';})){
+  kap.appendChild(el('p','bos','Kodunu çalıştırınca grafik burada görünür. Listedeki her eleman sayı olmalı.'));return;}
+ var mx=Math.max.apply(null,liste.concat([1])),c=el('div','cubuklar');
+ liste.forEach(function(x,i){var d=el('div','cubuk','<span>'+x+'</span>'+(etiketler&&etiketler[i]?'<i>'+esc(etiketler[i])+'</i>':''));d.style.height=Math.max(1,Math.round(150*x/mx))+'px';c.appendChild(d);});
+ kap.appendChild(c);
+}
+function kartCiz(kap,soz){
+ kap.innerHTML='';if(!soz||typeof soz!=='object'||Array.isArray(soz)||!Object.keys(soz).length){
+  kap.appendChild(el('p','bos','Kodunu çalıştırınca kartlar burada görünür.'));return;}
+ var k=el('div','kartlar');Object.keys(soz).forEach(function(a){k.appendChild(el('div','kart','<b>'+esc(a)+'</b><span>'+esc(soz[a])+'</span>'));});kap.appendChild(k);
+}
+
+function gorevCiz(m,g){
+ var kart=el('section','gorev'+(durum.tamam[g.id]?' tamam':''));kart.id=g.id;
+ if(g.ek)kart.dataset.ek='1';
+ var etiket=(g.tur==='tahmin'?'<span class="kick">Önce tahmin et</span>':(g.hata?'<span class="kick">Hatayı bul</span>':''));
+ kart.appendChild(el('div','gbas',etiket+'<h2>'+esc(g.ad)+'</h2><span class="tik">✓ Tamamlandı</span>'));
+ function bitir(){if(durum.tamam[g.id])return;var once=modulTamam(m);durum.tamam[g.id]=true;kaydet();kart.classList.add('tamam');navCiz();parcalariCiz();
+  if(!once&&modulTamam(m))odulGoster(m);}
+
+ if(g.tur==='tahmin'){
+  kart.appendChild(el('p','giris',bicim(g.soru)));
+  var pre=el('pre','kod');pre.textContent=g.kod;kart.appendChild(pre);
+  var sec=el('div','secenek'),son=el('p','sonuc','');
+  g.secenekler.forEach(function(s,i){var b=el('button','',esc(s));
+   if(durum.tamam[g.id]&&i===g.dogru)b.className='dogru';
+   b.onclick=function(){if(i===g.dogru){b.className='dogru';son.className='sonuc iyi';son.innerHTML=bicim(g.aciklama);bitir();}
+    else{b.className='yanlis';son.className='sonuc kotu';son.textContent='Bu değil. Kodu satır satır yeniden izle.';}};
+   sec.appendChild(b);});
+  if(durum.tamam[g.id]){son.className='sonuc iyi';son.innerHTML=bicim(g.aciklama);}
+  kart.appendChild(sec);kart.appendChild(son);return kart;
+ }
+
+ kart.appendChild(el('p','giris',bicim(g.giris)));
+ if(g.gosterKod){var gk=el('pre','kod');gk.textContent=g.gosterKod;kart.appendChild(gk);}
+ if(g.giris2)kart.appendChild(el('p','giris',bicim(g.giris2)));
+ function ipucuEkle(kap,ip,no){if(!ip)return;var anahtar=g.id+'-'+no,b=el('button','ipb','İpucu'),kutu=el('div','ipucu');kutu.style.display='none';
+  if(ip[0])kutu.appendChild(el('p','',bicim(ip[0])));
+  if(ip[1]){var kb=el('button','ipb',ip[0]?'Kodu da göster':'Kodu göster'),not_=el('p','kucuk',''),pk=el('pre','');pk.textContent=ip[1];pk.style.display='none';
+   kb.onclick=function(){if(!durum.deneme[g.id]){not_.textContent='Önce bir dene: kodunu yazıp Çalıştır\'a bas. Takılırsan kod burada olacak.';return;}
+    not_.textContent='';pk.style.display='block';kb.style.display='none';if(!durum.ipKod[anahtar]){durum.ipKod[anahtar]=1;kaydet();}};
+   if(durum.ipKod[anahtar]){pk.style.display='block';kb.style.display='none';}
+   kutu.appendChild(kb);kutu.appendChild(not_);kutu.appendChild(pk);}
+  b.onclick=function(){var acik=kutu.style.display==='none';kutu.style.display=acik?'block':'none';b.textContent=acik?'İpucunu gizle':'İpucu';
+   if(acik&&ip[0]&&!durum.ipAcik[anahtar]){durum.ipAcik[anahtar]=1;kaydet();}};
+  kap.appendChild(b);kap.appendChild(kutu);}
+ if(g.adimlar){var ol=el('ol','adim');g.adimlar.forEach(function(a,i){var li=el('li','',bicim(a)+' ');ipucuEkle(li,g.ipucu&&g.ipucu[i],i);ol.appendChild(li);});kart.appendChild(ol);}
+ else if(g.ipucu){var ipk=el('div','');ipucuEkle(ipk,g.ipucu[0],0);kart.appendChild(ipk);}
+ var iki=el('div','iki'),sol=el('div',''),sag=el('div','');
+ sol.appendChild(el('div','lbl','KODUN'));
+ var ta=el('textarea','');ta.spellcheck=false;ta.setAttribute('wrap','off');
+ ta.value=durum.kod[g.id]!=null?durum.kod[g.id]:(g.baslangic||'');
+ ta.addEventListener('input',function(){durum.kod[g.id]=ta.value;kaydet();});
+ ta.addEventListener('keydown',function(e){
+  if(e.key==='Tab'){e.preventDefault();ta.setRangeText('    ',ta.selectionStart,ta.selectionEnd,'end');ta.dispatchEvent(new Event('input'));}
+  else if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();calistirB.click();}
+  else if(e.key==='Enter'){var bas=ta.value.lastIndexOf('\n',ta.selectionStart-1)+1,satir=ta.value.slice(bas,ta.selectionStart);
+   var gir=(/^ */.exec(satir)||[''])[0]+(/:\s*$/.test(satir)?'    ':'');e.preventDefault();
+   ta.setRangeText('\n'+gir,ta.selectionStart,ta.selectionEnd,'end');ta.dispatchEvent(new Event('input'));}
+ });
+ sol.appendChild(ta);
+ var btns=el('div','btns'),calistirB=el('button','b ana','▶ Çalıştır'),kontrolB=el('button','b','Kontrol et');
+ var ornekB=el('button','b','Çalışan hâlini dene');ornekB.title='Kodu göstermez; programın bitmiş hâlini çalıştırır';
+ btns.appendChild(calistirB);btns.appendChild(kontrolB);btns.appendChild(ornekB);
+ if(g.baslangic){var geri=el('button','b','İlk hâline dön');geri.onclick=function(){ta.value=g.baslangic;ta.dispatchEvent(new Event('input'));};btns.appendChild(geri);}
+ sol.appendChild(btns);
+ var son2=el('p','sonuc','');sol.appendChild(son2);
+
+ var gkap=null;
+ if(g.gorsel){sag.appendChild(el('div','lbl',g.gorsel==='izgara'?'ÇİZİM ALANI':(g.gorsel==='cubuk'?'GRAFİK':'KARTLAR')));gkap=el('div','');sag.appendChild(gkap);
+  if(g.gorsel==='izgara')izgaraCiz(gkap,{});else if(g.gorsel==='cubuk')cubukCiz(gkap,null,g.getiket);else kartCiz(gkap,null);
+  sag.appendChild(el('div','lbl','ÇIKTI')).style.marginTop='14px';}
+ else sag.appendChild(el('div','lbl','ÇIKTI'));
+ var cik=el('div','cikti');sag.appendChild(cik);
+ if(g.ornek){sag.appendChild(el('div','lbl','PROGRAMIN ŞÖYLE ÇALIŞMALI')).style.marginTop='14px';var o=el('pre','ornek');o.textContent=g.ornek;sag.appendChild(o);}
+ iki.appendChild(sol);iki.appendChild(sag);kart.appendChild(iki);
+
+ function gorselGuncelle(boyali){if(!gkap)return;if(g.gorsel==='izgara')izgaraCiz(gkap,boyali);else if(g.gorsel==='cubuk')cubukCiz(gkap,al(g.gdeg),g.getiket);else kartCiz(gkap,al(g.gdeg));}
+ function kilit(a){mesgul=a;document.querySelectorAll('button.b').forEach(function(b){b.disabled=a||(!py&&b.dataset.py==='1');});}
+ calistirB.dataset.py='1';kontrolB.dataset.py='1';ornekB.dataset.py='1';
+
+ if(pyDurum==='yok'){
+  calistirB.style.display='none';ornekB.style.display='none';kontrolB.textContent='JupyterLite\'ta yaptım, çıktım örnekle aynı';kontrolB.dataset.py='0';
+  kontrolB.onclick=function(){son2.className='sonuc iyi';son2.textContent='Tamamlandı olarak işaretlendi.';bitir();};
+  cik.textContent='Python bu sayfada çalışmıyor. Kodu JupyterLite\'ta yaz ve çalıştır.';
+ }else{
+  if(!py){calistirB.disabled=true;kontrolB.disabled=true;ornekB.disabled=true;}
+  async function kos(src,etiket){if(!py||mesgul)return;kilit(true);cik.textContent='';son2.textContent='';
+   if(etiket){var et=el('span','sis','');et.textContent=etiket+'\n';cik.appendChild(et);}
+   var n=0,boyali={},kesildi=false;
+   var hata=await pyCalistir(src,kutuVar?'kutu':'pencere',[],{kutu:cik,
+    yaz:function(mt,gir){n+=mt.length;if(n>20000){if(!kesildi){kesildi=true;cik.appendChild(el('span','hata','\n… (çıktı çok uzun, kesildi)\n'));}return;}
+     var s=document.createElement('span');if(gir)s.className='gir';s.textContent=mt;cik.appendChild(s);cik.scrollTop=cik.scrollHeight;},
+    boya:function(s,t){boyali[s+','+t]=1;}});
+   if(hata){var h=el('span','hata','');h.textContent='\n'+hata+'\n';cik.appendChild(h);cik.scrollTop=cik.scrollHeight;}
+   gorselGuncelle(boyali);kilit(false);}
+  calistirB.onclick=function(){if(ta.value.trim()&&!durum.deneme[g.id]){durum.deneme[g.id]=1;kaydet();}kos(ta.value);};
+  ornekB.onclick=function(){kos(coz(g.id));};
+  kontrolB.onclick=async function(){if(!py||mesgul)return;kilit(true);son2.className='sonuc';son2.textContent='Kontrol ediliyor…';
+   var src=ta.value,mesaj;if(src.trim()&&!durum.deneme[g.id]){durum.deneme[g.id]=1;kaydet();}
+   try{mesaj=src.trim()?await g.kontrol(function(girdiler){return testCalistir(src,girdiler);},src):'Önce kodunu yaz.';}catch(e){mesaj='Kontrol sırasında sorun çıktı: '+(e.message||e);}
+   if(mesaj){son2.className='sonuc kotu';son2.innerHTML=bicim(mesaj);}else{son2.className='sonuc iyi';son2.textContent='Doğru çalışıyor.';bitir();}
+   kilit(false);};
+ }
+ return kart;
+}
+
+function odulGoster(m){
+ var i=MODULLER.indexOf(m),o=el('section','odul','<p>'+esc(m.ad)+' modülü tamam. Şifrenin '+(i+1)+'. parçası:</p><p class="buyuk">'+esc(parca(i))+'</p>'+
+  '<p class="kucuk">Parçalar üstte birikiyor. Beşi tamamlanınca Kasa sekmesinde birleştir.</p>');
+ var ilkEk=document.querySelector('#ana .gorev[data-ek]');
+ if(ilkEk)ana.insertBefore(o,ilkEk);else ana.appendChild(o);
+ o.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function normal(s){return String(s).toLocaleUpperCase('tr').replace(/İ/g,'I').replace(/[^A-Z0-9ÇĞÖŞÜ]/g,'');}
+function kasaCiz(){
+ var k=el('section','gorev kasa');
+ var tam=MODULLER.every(modulTamam),sifre=MODULLER.map(function(m,i){return parca(i);}).join('');
+ if(durum.acik){var ng=0;MODULLER.forEach(function(m){m.gorevler.forEach(function(g){if(durum.tamam[g.id])ng++;});});
+  k.innerHTML='<p class="acik">Kasa açıldı!</p><p>Beş modülü de tamamladın. Ekranını eğitmenine göster.</p>'+
+   '<p class="kucuk">'+ng+' görev · '+Object.keys(durum.ipAcik).length+' açıklama · '+Object.keys(durum.ipKod).length+' kod ipucu</p>'+
+   '<p class="kucuk">İpucu kullanmak öğrenmenin parçası. Bir dahaki sefere daha azıyla dene.</p>';return k;}
+ k.appendChild(el('h2','','Kasa'));
+ k.appendChild(el('p','','Her modülü bitirdiğinde şifrenin bir parçasını kazanırsın. Beş parçayı modül sırasıyla yan yana yaz.'));
+ var n=MODULLER.filter(modulTamam).length;k.appendChild(el('p','kucuk','Kazanılan parça: '+n+' / 5'));
+ var inp=document.createElement('input');inp.type='text';inp.autocomplete='off';inp.placeholder='ŞİFRE';k.appendChild(inp);
+ var b=el('button','b ana','Kasayı aç'),s=el('p','sonuc','');k.appendChild(b);k.appendChild(s);
+ function dene(){var dogru=normal(inp.value)===normal(sifre);
+  if(dogru&&tam){durum.acik=true;kaydet();ciz();}
+  else if(dogru){s.className='sonuc kotu';s.textContent='Şifre doğru, ama bu bilgisayarda henüz kazanılmamış parçalar var. Önce modülleri tamamla.';}
+  else{s.className='sonuc kotu';s.textContent=tam?'Şifre yanlış. Parçaları modül sırasıyla, arada boşluk bırakmadan yaz.':'Şifre yanlış. Henüz bütün parçaları kazanmadın.';}}
+ b.onclick=dene;inp.addEventListener('keydown',function(e){if(e.key==='Enter')dene();});
+ return k;
+}
+function ciz(){
+ navCiz();parcalariCiz();ana.innerHTML='';
+ if(pyDurum==='yukleniyor')ana.appendChild(el('div','uyari','Python yükleniyor… İlk açılışta yarım dakika kadar sürebilir. Bu sırada "Önce tahmin et" sorularını çözebilirsin.'));
+ if(pyDurum==='yok')ana.appendChild(el('div','uyari kotu','Python bu sayfada yüklenemedi. Görevleri JupyterLite\'ta yap; çıktın örnekle aynıysa görevi kendin işaretle.'));
+ if(durum.sekme==='kasa'){ana.appendChild(kasaCiz());}
+ else{var m=MODULLER.filter(function(x){return x.id===durum.sekme;})[0]||MODULLER[0];
+  if(m.bilgi){var bk=el('section','gorev bilgi','<div class="gbas"><span class="kick hat">Kısa hatırlatma</span><h2>'+esc(m.ad)+'</h2></div>');
+   m.bilgi.metin.forEach(function(t){bk.appendChild(el('p','giris',bicim(t)));});
+   var oc=BILGI_CIKTI[m.id]||[];m.bilgi.ornekler.forEach(function(k,i){var ik=el('div','iki'),a1=el('div',''),a2=el('div','');
+    a1.appendChild(el('div','lbl','KOD'));var p1=el('pre','kod');p1.textContent=k;a1.appendChild(p1);
+    a2.appendChild(el('div','lbl','ÇIKTI'));var p2=el('pre','kod');p2.textContent=oc[i]||'';a2.appendChild(p2);ik.appendChild(a1);ik.appendChild(a2);bk.appendChild(ik);});
+   ana.appendChild(bk);}
+  m.gorevler.forEach(function(g){ana.appendChild(gorevCiz(m,g));});
+  if(modulTamam(m)){var i=MODULLER.indexOf(m);var o=el('section','odul','<p>'+esc(m.ad)+' modülü tamam. Şifrenin '+(i+1)+'. parçası:</p><p class="buyuk">'+esc(parca(i))+'</p>');
+   var ilkEk=ana.querySelector('.gorev[data-ek]');if(ilkEk)ana.insertBefore(o,ilkEk);else ana.appendChild(o);}}
+ var sf=el('p','kucuk','');var a=el('a','sifirla','Bu bilgisayardaki ilerlemeyi sil ve baştan başla');
+ a.onclick=function(){if(window.confirm('Yazdığın kodlar ve kazandığın parçalar silinecek. Emin misin?')){durum={tamam:{},kod:{},sekme:'m1',acik:false,deneme:{},ipAcik:{},ipKod:{}};kaydet();ciz();}};
+ sf.appendChild(a);ana.appendChild(sf);
+}
+
+/* test ve eğitmen için */
+window.KK={moduller:MODULLER,kontrol:async function(id,src){var g=null;MODULLER.forEach(function(m){m.gorevler.forEach(function(x){if(x.id===id)g=x;});});
+ return g.kontrol(function(girdiler){return testCalistir(src,girdiler);},src);},hazir:function(){return pyDurum;}};
+
+ciz();
+(async function(){
+ try{
+  if(typeof loadPyodide!=='function')throw new Error('indirilemedi');
+  var p=await loadPyodide();
+  var dec=new TextDecoder();
+  p.setStdout({write:function(buf){if(hedef)hedef.yaz(dec.decode(buf,{stream:true}));return buf.length;}});
+  p.setStderr({write:function(buf){return buf.length;}});
+  p.runPython(KURULUM);py=p;pyDurum='hazir';
+ }catch(e){pyDurum='yok';}
+ ciz();
+})();
+})();
+</script>
+</body>
+</html>
